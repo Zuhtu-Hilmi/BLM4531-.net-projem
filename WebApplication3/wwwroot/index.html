@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>En Sade Sözlük</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #f9f9f9;
+        }
+
+        #txtKelime {
+            width: 70%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        #btnAra {
+            width: 25%;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #sonucAlani {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            min-height: 50px;
+            line-height: 1.6;
+        }
+
+        h2 {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Hızlı Sözlük</h2>
+    <p style="position: fixed; top: 15px; right: 20px; font-size: 14px; margin: 0;">
+        <a href="/admin.html">Admin Paneli</a>
+    </p>
+    <p>Aradığınız kelimenin anlamını, dikkat dağıtıcı hiçbir unsur olmadan anında öğrenin.</p>
+
+    <input type="text" id="txtKelime" placeholder="Kelime girin..." />
+    <button id="btnAra">Ara</button>
+
+    <hr style="border: none; border-top: 1px solid #eee; margin-top: 25px;">
+
+    <div id="sonucAlani">
+        ...
+    </div>
+
+    <script>
+        const kelimeKutusu = document.getElementById("txtKelime");
+        const araButonu = document.getElementById("btnAra");
+        const sonucAlani = document.getElementById("sonucAlani");
+
+        araButonu.addEventListener("click", aramaYap);
+        kelimeKutusu.addEventListener("keypress", function (event) {
+            if (event.key === "Enter") {
+                aramaYap();
+            }
+        });
+
+        async function aramaYap() {
+            var kelime = kelimeKutusu.value;
+            if (kelime.trim() === "") {
+                sonucAlani.innerText = "Lütfen bir kelime girin.";
+                return;
+            }
+
+            sonucAlani.style.color = "#888";
+            sonucAlani.innerText = "Aranıyor...";
+
+            try {
+                // Bu, 'GET /api/sozluk/kelime' isteği gönderir
+                const response = await fetch('/api/sozluk/' + kelime);
+
+                if (response.ok) { // 200 OK
+                    const anlam = await response.text();
+                    sonucAlani.style.color = "#000";
+                    sonucAlani.innerText = anlam;
+                }
+                else if (response.status === 404) { // 404 Bulunamadı
+                    const hataMesaji = await response.text();
+                    sonucAlani.style.color = "#b22222";
+                    sonucAlani.innerText = hataMesaji;
+                }
+                else {
+                    // Hata ayıklama için eklediğimiz 500 hatası yakalayıcı
+                    const sunucuHatasi = await response.text();
+                    sonucAlani.style.color = "#b22222";
+                    sonucAlani.innerText = sunucuHatasi;
+                }
+            }
+            catch (error) {
+                // Network hatası
+                sonucAlani.style.color = "#b22222";
+                sonucAlani.innerText = "Ağ hatası: " + error.message;
+            }
+        }
+    </script>
+
+</body>
+</html>

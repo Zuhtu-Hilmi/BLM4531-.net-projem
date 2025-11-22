@@ -1,0 +1,125 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Admin Paneli - Sözlük</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: #f9f9f9;
+        }
+
+        input[type="text"], textarea {
+            width: 95%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        textarea {
+            min-height: 100px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            background-color: #28a745;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #sonucAlani {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #eee;
+            border-radius: 5px;
+            min-height: 50px;
+            line-height: 1.6;
+        }
+
+        h2 {
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Yeni Kelime Ekle</h2>
+    <p><a href="/">« Arama Sayfasına Geri Dön</a></p>
+
+    <input type="text" id="txtYeniKelime" placeholder="Yeni kelime..." />
+    <textarea id="txtYeniAnlam" placeholder="Kelimenin anlamı..."></textarea>
+    <button id="btnKaydet">Kaydet</button>
+
+    <div id="sonucAlani">
+        ...
+    </div>
+
+    <script>
+        const kelimeKutusu = document.getElementById("txtYeniKelime");
+        const anlamKutusu = document.getElementById("txtYeniAnlam");
+        const kaydetButonu = document.getElementById("btnKaydet");
+        const sonucAlani = document.getElementById("sonucAlani");
+
+        kaydetButonu.addEventListener("click", kaydetmeyiDene);
+
+        async function kaydetmeyiDene() {
+            var kelime = kelimeKutusu.value.trim();
+            var anlam = anlamKutusu.value.trim();
+
+            if (kelime === "" || anlam === "") {
+                sonucAlani.innerText = "Lütfen tüm alanları doldurun.";
+                return;
+            }
+
+            sonucAlani.style.color = "#888";
+            sonucAlani.innerText = "Kaydediliyor...";
+
+            try {
+                // Bu, 'POST /api/sozluk' isteği gönderir
+                const response = await fetch('/api/sozluk', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        kelime: kelime,
+                        anlam: anlam
+                    })
+                });
+
+                const mesaj = await response.text();
+
+                if (response.ok) { // 200 OK
+                    sonucAlani.style.color = "#006400";
+                    sonucAlani.innerText = mesaj;
+                    kelimeKutusu.value = "";
+                    anlamKutusu.value = "";
+                } else { // 400, 409, 500 vb.
+                    sonucAlani.style.color = "#b22222";
+                    sonucAlani.innerText = "Hata: " + mesaj;
+                }
+            }
+            catch (error) {
+                sonucAlani.style.color = "#b22222";
+                sonucAlani.innerText = "Bir ağ hatası oluştu: " + error.message;
+            }
+        }
+    </script>
+
+</body>
+</html>
