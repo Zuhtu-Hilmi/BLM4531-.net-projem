@@ -47,11 +47,18 @@
     </style>
 </head>
 <body>
+    <div style="text-align: right; padding: 10px;">
+        <span id="panelGirisYok">
+            <a href="/giris.html" style="text-decoration:none; color: #007bff;">Giriş Yap / Kayıt Ol</a>
+        </span>
+        <span id="panelKullanici" style="display: none;">
+            <button onclick="favorileriGoster()">❤️ Favorilerim</button>
+            <button onclick="cikisYap()">Çıkış</button>
+        </span>
+    </div>
 
     <h2>Hızlı Sözlük</h2>
-    <p style="position: fixed; top: 15px; right: 20px; font-size: 14px; margin: 0;">
-        <a href="/admin.html">Admin Paneli</a>
-    </p>
+
     <p>Aradığınız kelimenin anlamını, dikkat dağıtıcı hiçbir unsur olmadan anında öğrenin.</p>
 
     <input type="text" id="txtKelime" placeholder="Kelime girin..." />
@@ -63,54 +70,120 @@
         ...
     </div>
 
+    <button id="btnFavori" style="display:none; margin-top:15px; width:100%; padding:10px; background:#ffc107; border:none; border-radius:5px; cursor:pointer;">
+        ⭐ Bu Kelimeyi Favorilere Ekle
+    </button>
+
+    <div id="favoriListesiAlani" style="margin-top:30px; display:none; border-top:1px solid #eee; padding-top:20px;">
+        <h3>Favorilerim</h3>
+        <ul id="liste" style="list-style:none; padding:0;"></ul>
+    </div>
+
     <script>
         const kelimeKutusu = document.getElementById("txtKelime");
         const araButonu = document.getElementById("btnAra");
         const sonucAlani = document.getElementById("sonucAlani");
+        const btnFavori = document.getElementById("btnFavori");
+        const panelGirisYok = document.getElementById("panelGirisYok");
+        const panelKullanici = document.getElementById("panelKullanici");
+
+        // Kullanıcı giriş yapmış mı kontrol et
+        const kullaniciId = localStorage.getItem("sozluk_uid");
+        if (kullaniciId) {
+            panelGirisYok.style.display = "none";
+            panelKullanici.style.display = "block";
+        }
 
         araButonu.addEventListener("click", aramaYap);
-        kelimeKutusu.addEventListener("keypress", function (event) {
-            if (event.key === "Enter") {
-                aramaYap();
-            }
-        });
+        kelimeKutusu.addEventListener("keypress", function (e) { if (e.key === "Enter") aramaYap(); });
+
+        // Global değişkenler (Favori eklerken kullanmak için)
+        let sonArananKelime = "";
+        let sonBulunanAnlam = "";
 
         async function aramaYap() {
-            var kelime = kelimeKutusu.value;
-            if (kelime.trim() === "") {
-                sonucAlani.innerText = "Lütfen bir kelime girin.";
-                return;
-            }
+            var kelime = kelimeKutusu.value.trim();
+            if (kelime === "") return;
 
-            sonucAlani.style.color = "#888";
+            // Ekranı temizle
             sonucAlani.innerText = "Aranıyor...";
+            btnFavori.style.display = "none";
+            document.getElementById("favoriListesiAlani").style.display = "none";
 
             try {
-                // Bu, 'GET /api/sozluk/kelime' isteği gönderir
                 const response = await fetch('/api/sozluk/' + kelime);
-
-                if (response.ok) { // 200 OK
+                if (response.ok) {
                     const anlam = await response.text();
                     sonucAlani.style.color = "#000";
                     sonucAlani.innerText = anlam;
-                }
-                else if (response.status === 404) { // 404 Bulunamadı
-                    const hataMesaji = await response.text();
+
+                    // Kelime bulunduysa değişkenlere ata
+                    sonArananKelime = kelime;
+                    sonBulunanAnlam = anlam;
+
+                    // SADECE kullanıcı giriş yapmışsa butonu göster
+                    if (kullaniciId) {
+                        btnFavori.style.display = "block";
+                    }
+                } else {
                     sonucAlani.style.color = "#b22222";
-                    sonucAlani.innerText = hataMesaji;
+                    sonucAlani.innerText = "Kelime bulunamadı.";
                 }
-                else {
-                    // Hata ayıklama için eklediğimiz 500 hatası yakalayıcı
-                    const sunucuHatasi = await response.text();
-                    sonucAlani.style.color = "#b22222";
-                    sonucAlani.innerText = sunucuHatasi;
-                }
+            } catch (error) {
+                sonucAlani.innerText = "Hata: " + error.message;
             }
-            catch (error) {
-                // Network hatası
-                sonucAlani.style.color = "#b22222";
-                sonucAlani.innerText = "Ağ hatası: " + error.message;
+        }
+
+        // Favori Ekleme Fonksiyonu
+        btnFavori.addEventListener("click", async function () {
+            if (!kullaniciId) return; // Güvenlik
+
+            const veri = {
+                KullaniciId: parseInt(kullaniciId),
+                Kelime: sonArananKelime,
+                Anlam: sonBulunanAnlam
+            };
+
+            const response = await fetch('/api/favori/ekle', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(veri)
+            });
+
+            if (response.ok) alert("Favorilere eklendi!");
+            else alert(await response.text());
+        });
+
+        // Favorileri Listeleme
+        async function favorileriGoster() {
+            const div = document.getElementById("favoriListesiAlani");
+            const liste = document.getElementById("liste");
+            div.style.display = "block";
+            liste.innerHTML = "Yükleniyor...";
+
+            const response = await fetch('/api/favori/listele/' + kullaniciId);
+            const veriler = await response.json();
+
+            liste.innerHTML = "";
+            veriler.forEach(fav => {
+                const li = document.createElement("li");
+                li.style.marginBottom = "10px";
+                li.style.borderBottom = "1px solid #eee";
+                li.innerHTML = `<b>${fav.kelime}</b>: ${fav.anlam.substring(0, 50)}... <button onclick="favoriSil(${fav.id})" style="color:red; border:none; background:none; cursor:pointer;">Sil</button>`;
+                liste.appendChild(li);
+            });
+        }
+
+        async function favoriSil(id) {
+            if (confirm("Silmek istediğine emin misin?")) {
+                await fetch('/api/favori/sil/' + id, { method: 'DELETE' });
+                favorileriGoster(); // Listeyi yenile
             }
+        }
+
+        function cikisYap() {
+            localStorage.removeItem("sozluk_uid");
+            window.location.reload();
         }
     </script>
 

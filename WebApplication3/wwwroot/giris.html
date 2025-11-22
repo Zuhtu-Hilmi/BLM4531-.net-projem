@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Giriş Yap - En Sade Sözlük</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            max-width: 400px;
+            margin: 50px auto;
+            text-align: center;
+        }
+
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 95%;
+            padding: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+
+        .secondary {
+            background: #6c757d;
+        }
+    </style>
+</head>
+<body>
+    <h2>Kullanıcı Girişi</h2>
+    <input type="text" id="txtKadi" placeholder="Kullanıcı Adı" />
+    <input type="password" id="txtSifre" placeholder="Şifre" />
+    <button onclick="girisYap()">Giriş Yap</button>
+    <button onclick="kayitOl()" class="secondary">Kayıt Ol</button>
+    <p><a href="/">« Aramaya Dön</a></p>
+
+    <script>async function girisYap() {
+            const veri = { KullaniciAdi: document.getElementById("txtKadi").value, Sifre: document.getElementById("txtSifre").value };
+            const response = await fetch('/api/kullanici/giris', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(veri)
+            });
+
+            if (response.ok) {
+                const sonuc = await response.json();
+                localStorage.setItem("sozluk_uid", sonuc.id); // ID'yi tarayıcıya kaydet
+                window.location.href = "/"; // Ana sayfaya yönlendir
+            } else {
+                alert("Hatalı kullanıcı adı veya şifre!");
+            }
+        }
+
+        async function kayitOl() {
+            const veri = { KullaniciAdi: document.getElementById("txtKadi").value, Sifre: document.getElementById("txtSifre").value };
+            const response = await fetch('/api/kullanici/kayit', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(veri)
+            });
+            alert(await response.text());
+        }</script>
+</body>
+</html>
