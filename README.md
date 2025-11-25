@@ -1,6 +1,4 @@
-# WebApplication3
-
-PROJE DURUM RAPORU
+# WebApplication3 için PROJE DURUM RAPORU
 
 1. TASARIM (FRONTEND) DURUMU:
    - Ana sayfa (index.html) tasarımı tamamlandı. Sade ve odaklanmayı sağlayan bir arayüz kodlandı.
