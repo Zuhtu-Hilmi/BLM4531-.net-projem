@@ -60,7 +60,7 @@ namespace WebApplication3.Controllers
 
 
         [HttpPost]
-        public IActionResult PostKelime([FromBody] YeniKelimeRequest yeniKelime)
+        public IActionResult PostKelime([FromBody] YeniKelimeRequest yeniKelime)    //bu fonksiyon şu anda kullanım dışında
         {
             if (yeniKelime == null || string.IsNullOrEmpty(yeniKelime.Kelime) || string.IsNullOrEmpty(yeniKelime.Anlam))
             {

@@ -21,7 +21,7 @@ app.UseHttpsRedirection();
 app.UseDefaultFiles(); // <--: index.html'i varsayýlan giriþ sayfasý olarak ayarlar
 app.UseStaticFiles();  // <--: wwwroot klasöründeki dosyalarýn sunulmasýný saðlar
 
-app.UseAuthorization();
+app.UseAuthorization();  // <--: Token veya cookie yok, local storage kullanýlýyor. bu yüzden gereksiz
 
 app.MapControllers();
 
