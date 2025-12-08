@@ -2,7 +2,7 @@
 
 1. TASARIM (FRONTEND) DURUMU:
    - Ana sayfa (index.html) tasarımı tamamlandı. Sade ve odaklanmayı sağlayan bir arayüz kodlandı.
-   - Giriş, Kayıt ve Admin sayfaları (giris.html) hazırlandı.
+   - Giriş, Kayıt ve Admin sayfaları (giris.html ve admin.html) hazırlandı.
    - JavaScript kullanılarak sayfa yenilenmeden (AJAX/Fetch) veri çekme işlemleri yapıldı.
 
 2. VERİTABANI DURUMU:
