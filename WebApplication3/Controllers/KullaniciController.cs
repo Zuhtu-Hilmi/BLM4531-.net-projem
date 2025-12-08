@@ -17,6 +17,14 @@ namespace WebApplication3.Controllers
         [HttpPost("kayit")]
         public IActionResult KayitOl([FromBody] KullaniciLoginModel model)
         {
+            // 1. BOŞLUK KONTROLÜ
+            if (string.IsNullOrWhiteSpace(model.KullaniciAdi) || string.IsNullOrWhiteSpace(model.Sifre))
+            {
+                return BadRequest("Kullanıcı adı ve şifre boş bırakılamaz.");
+            }
+
+            // HATA BURADAYDI: Burada fazladan açılan '{' parantezi kaldırıldı.
+
             string? baglantiDizesi = _configuration.GetConnectionString("KullaniciBaglanti");
 
             using (SqlConnection baglanti = new SqlConnection(baglantiDizesi))
@@ -38,7 +46,7 @@ namespace WebApplication3.Controllers
                     using (SqlCommand komut = new SqlCommand(sql, baglanti))
                     {
                         komut.Parameters.AddWithValue("@kadi", model.KullaniciAdi);
-                        komut.Parameters.AddWithValue("@sifre", model.Sifre); // Gerçek projede şifre hashlenir!
+                        komut.Parameters.AddWithValue("@sifre", model.Sifre);
                         komut.ExecuteNonQuery();
                     }
                     return Ok("Kayıt başarılı!");
@@ -48,7 +56,7 @@ namespace WebApplication3.Controllers
                     return StatusCode(500, "Hata: " + ex.Message);
                 }
             }
-        }
+        } // KayitOl metodu burada bitiyor
 
         [HttpPost("giris")]
         public IActionResult GirisYap([FromBody] KullaniciLoginModel model)
@@ -84,7 +92,7 @@ namespace WebApplication3.Controllers
             {
                 baglanti.Open();
 
-                // Transaction başlatıyoruz (Ya hepsi silinir ya hiçbiri)
+                // Transaction başlatıyoruz
                 SqlTransaction transaction = baglanti.BeginTransaction();
 
                 try
@@ -104,21 +112,18 @@ namespace WebApplication3.Controllers
                         kulKomut.Parameters.AddWithValue("@uid", id);
                         int etkilenen = kulKomut.ExecuteNonQuery();
 
-                        // Eğer kullanıcı zaten yoksa?
                         if (etkilenen == 0)
                         {
-                            transaction.Rollback(); // İşlemleri geri al
+                            transaction.Rollback();
                             return NotFound("Kullanıcı bulunamadı.");
                         }
                     }
 
-                    // Her şey yolunda gittiyse onayla
                     transaction.Commit();
                     return Ok("Hesabınız ve tüm verileriniz başarıyla silindi.");
                 }
                 catch (Exception ex)
                 {
-                    // Hata olursa hiçbir şeyi silme, eski haline getir
                     transaction.Rollback();
                     return StatusCode(500, "Silme işlemi sırasında hata oluştu: " + ex.Message);
                 }
@@ -130,7 +135,7 @@ namespace WebApplication3.Controllers
         {
             string? baglantiDizesi = _configuration.GetConnectionString("KullaniciBaglanti");
 
-            using (SqlConnection connection = new SqlConnection(baglantiDizesi)) // Bağlantı string'ini kendi değişkeninle değiştir
+            using (SqlConnection connection = new SqlConnection(baglantiDizesi))
             {
                 connection.Open();
 
@@ -171,7 +176,7 @@ namespace WebApplication3.Controllers
     public class SifreDegistirmeModel
     {
         public int KullaniciId { get; set; }
-        public string? EskiSifre { get; set; } // ? ekledik
-        public string? YeniSifre { get; set; } // ? ekledik
+        public string? EskiSifre { get; set; }
+        public string? YeniSifre { get; set; }
     }
 }

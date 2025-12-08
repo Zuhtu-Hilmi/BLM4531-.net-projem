@@ -71,7 +71,17 @@
         }
 
         async function kayitOl() {
-            const veri = { KullaniciAdi: document.getElementById("txtKadi").value, Sifre: document.getElementById("txtSifre").value };
+            const kadi = document.getElementById("txtKadi").value.trim(); // .trim() baştaki sondaki boşlukları siler
+            const sifre = document.getElementById("txtSifre").value.trim();
+
+            // BOŞLUK KONTROLÜ
+            if (kadi === "" || sifre === "") {
+                alert("Lütfen kullanıcı adı ve şifre alanlarını doldurunuz!");
+                return; // Fonksiyonu burada durdur, sunucuya gitme
+            }
+
+            const veri = { KullaniciAdi: kadi, Sifre: sifre };
+
             const response = await fetch('/api/kullanici/kayit', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
