@@ -53,6 +53,7 @@
         </span>
         <span id="panelKullanici" style="display: none;">
             <button onclick="favorileriGoster()">❤️ Favorilerim</button>
+            <button onclick="hesapSil()" style="background-color: #dc3545;">⚠️ Hesabımı Sil</button>
             <button onclick="cikisYap()">Çıkış</button>
         </span>
     </div>
@@ -178,6 +179,34 @@
             if (confirm("Silmek istediğine emin misin?")) {
                 await fetch('/api/favori/sil/' + id, { method: 'DELETE' });
                 favorileriGoster(); // Listeyi yenile
+            }
+        }
+
+        async function hesapSil() {
+            // 1. Kullanıcıdan onay al
+            if (!confirm("DİKKAT! Hesabınız ve tüm favorileriniz kalıcı olarak silinecek. Emin misiniz?")) {
+                return; // Vazgeçti
+            }
+
+            if (!kullaniciId) return;
+
+            // 2. API'ye silme isteği gönder
+            try {
+                const response = await fetch('/api/kullanici/sil/' + kullaniciId, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    alert("Hesabınız silindi. Üzüldük :( Ana sayfaya yönlendiriliyorsunuz.");
+                    // 3. Tarayıcı hafızasını temizle ve çıkış yap
+                    localStorage.removeItem("sozluk_uid");
+                    localStorage.removeItem("sozluk_kadi"); // Eğer kaydettiysen
+                    window.location.reload();
+                } else {
+                    alert("Hata oluştu: " + await response.text());
+                }
+            } catch (err) {
+                alert("Bağlantı hatası: " + err.message);
             }
         }
 

@@ -74,6 +74,56 @@ namespace WebApplication3.Controllers
             }
             return Unauthorized("Kullanıcı adı veya şifre hatalı.");
         }
+
+        [HttpDelete("sil/{id}")]
+        public IActionResult HesapSil(int id)
+        {
+            string? baglantiDizesi = _configuration.GetConnectionString("KullaniciBaglanti");
+
+            using (SqlConnection baglanti = new SqlConnection(baglantiDizesi))
+            {
+                baglanti.Open();
+
+                // Transaction başlatıyoruz (Ya hepsi silinir ya hiçbiri)
+                SqlTransaction transaction = baglanti.BeginTransaction();
+
+                try
+                {
+                    // 1. ADIM: Önce kullanıcının favorilerini temizle
+                    string favSilSql = "DELETE FROM Favoriler WHERE KullaniciId = @uid";
+                    using (SqlCommand favKomut = new SqlCommand(favSilSql, baglanti, transaction))
+                    {
+                        favKomut.Parameters.AddWithValue("@uid", id);
+                        favKomut.ExecuteNonQuery();
+                    }
+
+                    // 2. ADIM: Şimdi kullanıcının kendisini sil
+                    string kulSilSql = "DELETE FROM Kullanicilar WHERE Id = @uid";
+                    using (SqlCommand kulKomut = new SqlCommand(kulSilSql, baglanti, transaction))
+                    {
+                        kulKomut.Parameters.AddWithValue("@uid", id);
+                        int etkilenen = kulKomut.ExecuteNonQuery();
+
+                        // Eğer kullanıcı zaten yoksa?
+                        if (etkilenen == 0)
+                        {
+                            transaction.Rollback(); // İşlemleri geri al
+                            return NotFound("Kullanıcı bulunamadı.");
+                        }
+                    }
+
+                    // Her şey yolunda gittiyse onayla
+                    transaction.Commit();
+                    return Ok("Hesabınız ve tüm verileriniz başarıyla silindi.");
+                }
+                catch (Exception ex)
+                {
+                    // Hata olursa hiçbir şeyi silme, eski haline getir
+                    transaction.Rollback();
+                    return StatusCode(500, "Silme işlemi sırasında hata oluştu: " + ex.Message);
+                }
+            }
+        }
     }
 
     public class KullaniciLoginModel
