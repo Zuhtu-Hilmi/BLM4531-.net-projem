@@ -124,11 +124,54 @@ namespace WebApplication3.Controllers
                 }
             }
         }
+
+        [HttpPut("sifre-degistir")]
+        public IActionResult SifreDegistir(SifreDegistirmeModel model)
+        {
+            string? baglantiDizesi = _configuration.GetConnectionString("KullaniciBaglanti");
+
+            using (SqlConnection connection = new SqlConnection(baglantiDizesi)) // Bağlantı string'ini kendi değişkeninle değiştir
+            {
+                connection.Open();
+
+                // 1. Önce eski şifre doğru mu diye kontrol et
+                string kontrolSql = "SELECT COUNT(*) FROM Kullanicilar WHERE Id = @id AND Sifre = @eskiSifre";
+                using (SqlCommand komut = new SqlCommand(kontrolSql, connection))
+                {
+                    komut.Parameters.AddWithValue("@id", model.KullaniciId);
+                    komut.Parameters.AddWithValue("@eskiSifre", model.EskiSifre);
+
+                    int dogruMu = (int)komut.ExecuteScalar();
+                    if (dogruMu == 0)
+                    {
+                        return BadRequest("Eski şifreniz hatalı. Lütfen tekrar deneyin.");
+                    }
+                }
+
+                // 2. Eski şifre doğruysa yenisiyle güncelle
+                string updateSql = "UPDATE Kullanicilar SET Sifre = @yeniSifre WHERE Id = @id";
+                using (SqlCommand updateKomut = new SqlCommand(updateSql, connection))
+                {
+                    updateKomut.Parameters.AddWithValue("@yeniSifre", model.YeniSifre);
+                    updateKomut.Parameters.AddWithValue("@id", model.KullaniciId);
+                    updateKomut.ExecuteNonQuery();
+                }
+            }
+
+            return Ok("Şifreniz başarıyla değiştirildi.");
+        }
     }
 
     public class KullaniciLoginModel
     {
         public string? KullaniciAdi { get; set; }
         public string? Sifre { get; set; }
+    }
+
+    public class SifreDegistirmeModel
+    {
+        public int KullaniciId { get; set; }
+        public string? EskiSifre { get; set; } // ? ekledik
+        public string? YeniSifre { get; set; } // ? ekledik
     }
 }

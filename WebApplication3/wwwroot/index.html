@@ -46,16 +46,30 @@
         }
     </style>
 </head>
+
 <body>
     <div style="text-align: right; padding: 10px;">
         <span id="panelGirisYok">
             <a href="/giris.html" style="text-decoration:none; color: #007bff;">Giriş Yap / Kayıt Ol</a>
         </span>
-        <span id="panelKullanici" style="display: none;">
-            <button onclick="favorileriGoster()">❤️ Favorilerim</button>
-            <button onclick="hesapSil()" style="background-color: #dc3545;">⚠️ Hesabımı Sil</button>
-            <button onclick="cikisYap()">Çıkış</button>
-        </span>
+
+        <div id="panelKullanici" style="display: none; text-align: right;">
+            <div style="margin-bottom: 10px;">
+                <button onclick="favorileriGoster()">❤️ Favoriler</button>
+                <button onclick="formuGosterGizle()" style="background-color: #f39c12;">🔑 Şifre Değiştir</button>
+                <button onclick="hesapSil()" style="background-color: #dc3545;">⚠️ Hesabı Sil</button>
+                <button onclick="cikisYap()">Çıkış</button>
+            </div>
+
+            <div id="sifreDegistirmeFormu" style="display: none; background: #eee; padding: 10px; border-radius: 5px; margin-top: 10px; text-align: left;">
+                <h4>Şifre Güncelleme</h4>
+                <input type="password" id="txtEskiSifre" placeholder="Mevcut Şifreniz" style="width: 90%; margin-bottom: 5px;">
+                <input type="password" id="txtYeniSifre" placeholder="Yeni Şifreniz" style="width: 90%; margin-bottom: 5px;">
+                <br>
+                <button onclick="sifreGuncelle()" style="background-color: #27ae60;">Kaydet</button>
+                <button onclick="formuGosterGizle()" style="background-color: #7f8c8d;">İptal</button>
+            </div>
+        </div>
     </div>
 
     <h2>Hızlı Sözlük</h2>
@@ -63,6 +77,7 @@
     <p>Aradığınız kelimenin anlamını, dikkat dağıtıcı hiçbir unsur olmadan anında öğrenin.</p>
 
     <input type="text" id="txtKelime" placeholder="Kelime girin..." />
+
     <button id="btnAra">Ara</button>
 
     <hr style="border: none; border-top: 1px solid #eee; margin-top: 25px;">
@@ -213,6 +228,53 @@
         function cikisYap() {
             localStorage.removeItem("sozluk_uid");
             window.location.reload();
+        }
+
+        // Şifre formunu açıp kapatmaya yarayan basit fonksiyon
+        function formuGosterGizle() {
+            const form = document.getElementById("sifreDegistirmeFormu");
+            if (form.style.display === "none") {
+                form.style.display = "block";
+            } else {
+                form.style.display = "none";
+                // Kapatırken içini temizleyelim
+                document.getElementById("txtEskiSifre").value = "";
+                document.getElementById("txtYeniSifre").value = "";
+            }
+        }
+
+        // Backend'e isteği gönderen fonksiyon
+        async function sifreGuncelle() {
+            const eskiSifre = document.getElementById("txtEskiSifre").value;
+            const yeniSifre = document.getElementById("txtYeniSifre").value;
+
+            if (!eskiSifre || !yeniSifre) {
+                alert("Lütfen tüm alanları doldurun.");
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/kullanici/sifre-degistir', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        KullaniciId: localStorage.getItem('sozluk_uid'), // ID'yi localstorage'dan alıyoruz
+                        EskiSifre: eskiSifre,
+                        YeniSifre: yeniSifre
+                    })
+                });
+
+                if (response.ok) {
+                    alert("Şifreniz başarıyla değiştirildi!");
+                    formuGosterGizle(); // Formu kapat
+                } else {
+                    // Backend'den gelen hatayı göster (Örn: Eski şifre yanlış)
+                    const hataMesaji = await response.text();
+                    alert("Hata: " + hataMesaji);
+                }
+            } catch (err) {
+                alert("Bir sorun oluştu: " + err);
+            }
         }
     </script>
 
