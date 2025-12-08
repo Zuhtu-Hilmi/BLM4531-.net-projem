@@ -43,20 +43,30 @@
     <button onclick="kayitOl()" class="secondary">Kayıt Ol</button>
     <p><a href="/">« Aramaya Dön</a></p>
 
-    <script>async function girisYap() {
-            const veri = { KullaniciAdi: document.getElementById("txtKadi").value, Sifre: document.getElementById("txtSifre").value };
+    <script>
+        async function girisYap() {
+            const kadi = document.getElementById("kullaniciAdi").value; // Input ID'sine dikkat et
+            const sifre = document.getElementById("sifre").value;
+
             const response = await fetch('/api/kullanici/giris', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(veri)
+                body: JSON.stringify({ KullaniciAdi: kadi, Sifre: sifre })
             });
 
             if (response.ok) {
-                const sonuc = await response.json();
-                localStorage.setItem("sozluk_uid", sonuc.id); // ID'yi tarayıcıya kaydet
-                window.location.href = "/"; // Ana sayfaya yönlendir
+                const data = await response.json(); // Backend'den ID dönüyor
+                localStorage.setItem('kullaniciId', data);
+                localStorage.setItem('kullaniciAdi', kadi); // İsim bilgisini de saklayalım
+
+                // ÖZEL KONTROL BURADA:
+                if (kadi === "admin") {
+                    window.location.href = "admin.html"; // Admin paneline git
+                } else {
+                    window.location.href = "index.html"; // Normal sayfaya git
+                }
             } else {
-                alert("Hatalı kullanıcı adı veya şifre!");
+                alert("Giriş başarısız!");
             }
         }
 
@@ -68,6 +78,7 @@
                 body: JSON.stringify(veri)
             });
             alert(await response.text());
-        }</script>
+        }
+</script>
 </body>
 </html>

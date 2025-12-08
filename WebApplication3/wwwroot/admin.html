@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Paneli - Sözlük Yönetimi</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #2c3e50;
+        }
+
+        .panel {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 400px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .btn-ekle {
+            background-color: #27ae60;
+        }
+
+        .btn-guncelle {
+            background-color: #e67e22;
+        }
+
+        .btn-cikis {
+            background-color: #c0392b;
+            margin-top: 20px;
+        }
+
+        hr {
+            margin: 20px 0;
+            border: 0;
+            border-top: 1px solid #eee;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="panel">
+        <h2>Yönetici Paneli</h2>
+
+        <h3>Yeni Kelime Ekle</h3>
+        <input type="text" id="yeniKelime" placeholder="Kelime (Örn: Server)">
+        <textarea id="yeniAnlam" placeholder="Anlamı..."></textarea>
+        <button class="btn-ekle" onclick="kelimeEkle()">Kelimeyi Kaydet</button>
+
+        <hr>
+
+        <h3>Anlam Güncelle</h3>
+        <input type="text" id="guncelKelime" placeholder="Hangi Kelime? (Örn: Server)">
+        <textarea id="guncelAnlam" placeholder="Yeni Anlamı..."></textarea>
+        <button class="btn-guncelle" onclick="kelimeGuncelle()">Anlamı Değiştir</button>
+
+        <button class="btn-cikis" onclick="cikisYap()">Çıkış Yap</button>
+    </div>
+
+    <script>// KELİME EKLEME FONKSİYONU
+        async function kelimeEkle() {
+            const kelime = document.getElementById("yeniKelime").value;
+            const anlam = document.getElementById("yeniAnlam").value;
+
+            const response = await fetch('/api/sozluk', { // PostKelime Endpointi
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ kelime: kelime, anlam: anlam })
+            });
+
+            if (response.ok) {
+                alert("Kelime başarıyla eklendi!");
+                document.getElementById("yeniKelime").value = "";
+                document.getElementById("yeniAnlam").value = "";
+            } else {
+                alert("Hata: Kelime zaten var olabilir.");
+            }
+        }
+
+        // KELİME GÜNCELLEME FONKSİYONU
+        async function kelimeGuncelle() {
+            const kelime = document.getElementById("guncelKelime").value;
+            const anlam = document.getElementById("guncelAnlam").value;
+
+            const response = await fetch('/api/sozluk/guncelle', { // Yeni Yazdığımız Endpoint
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ kelime: kelime, anlam: anlam })
+            });
+
+            if (response.ok) {
+                alert("Anlam güncellendi!");
+            } else {
+                alert("Hata: Kelime bulunamadı.");
+            }
+        }
+
+        function cikisYap() {
+            localStorage.clear();
+            window.location.href = "giris.html";
+        }</script>
+</body>
+</html>

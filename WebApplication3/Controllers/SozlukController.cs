@@ -108,5 +108,50 @@ namespace WebApplication3.Controllers
 
             return Ok("Kelime başarıyla eklendi.");
         }
+
+        [HttpPut("guncelle")]
+        public IActionResult KelimeGuncelle(YeniKelimeRequest model)
+        {
+            // Veri boş mu kontrolü
+            if (string.IsNullOrEmpty(model.Kelime) || string.IsNullOrEmpty(model.Anlam))
+            {
+                return BadRequest("Kelime ve anlam boş olamaz.");
+            }
+
+            string? baglantiDizesi = _configuration.GetConnectionString("SozlukBaglanti");
+            if (string.IsNullOrEmpty(baglantiDizesi))
+            {
+                return StatusCode(500, "HATA: Veritabanı bağlantı dizesi bulunamadı.");
+            }
+
+            using (SqlConnection connection = new SqlConnection(baglantiDizesi))
+            {
+                connection.Open();
+
+                // Önce kelime var mı diye bakalım
+                string kontrolQuery = "SELECT COUNT(*) FROM Kelimeler WHERE Kelime = @Kelime";
+                using (SqlCommand kontrolCmd = new SqlCommand(kontrolQuery, connection))
+                {
+                    kontrolCmd.Parameters.AddWithValue("@Kelime", model.Kelime);
+                    int varMi = (int)kontrolCmd.ExecuteScalar();
+
+                    if (varMi == 0)
+                    {
+                        return NotFound("Bu kelime sistemde yok, önce eklemelisiniz.");
+                    }
+                }
+
+                // Kelime varsa anlamını güncelle (UPDATE)
+                string updateQuery = "UPDATE Kelimeler SET Anlam = @Anlam WHERE Kelime = @Kelime";
+                using (SqlCommand updateCmd = new SqlCommand(updateQuery, connection))
+                {
+                    updateCmd.Parameters.AddWithValue("@Kelime", model.Kelime);
+                    updateCmd.Parameters.AddWithValue("@Anlam", model.Anlam);
+                    updateCmd.ExecuteNonQuery();
+                }
+            }
+
+            return Ok("Kelime anlamı başarıyla güncellendi.");
+        }
     }
 }
