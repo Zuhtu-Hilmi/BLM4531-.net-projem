@@ -45,8 +45,9 @@
 
     <script>
         async function girisYap() {
-            const kadi = document.getElementById("kullaniciAdi").value; // Input ID'sine dikkat et
-            const sifre = document.getElementById("sifre").value;
+            // DÜZELTME 1: Input ID'leri HTML ile eşleşmeli (txtKadi ve txtSifre)
+            const kadi = document.getElementById("txtKadi").value;
+            const sifre = document.getElementById("txtSifre").value;
 
             const response = await fetch('/api/kullanici/giris', {
                 method: 'POST',
@@ -55,29 +56,30 @@
             });
 
             if (response.ok) {
-                const data = await response.json(); // Backend'den ID dönüyor
-                localStorage.setItem('kullaniciId', data);
-                localStorage.setItem('kullaniciAdi', kadi); // İsim bilgisini de saklayalım
+                const data = await response.json();
 
-                // ÖZEL KONTROL BURADA:
+                // DÜZELTME 2: index.html 'sozluk_uid' kullanıyor, biz de onu kullanmalıyız.
+                // Ayrıca data objesinin tamamını değil, sadece ID'yi almalıyız (data.id).
+                localStorage.setItem('sozluk_uid', data.id);
+                localStorage.setItem('sozluk_kadi', kadi);
+
                 if (kadi === "admin") {
-                    window.location.href = "admin.html"; // Admin paneline git
+                    window.location.href = "admin.html";
                 } else {
-                    window.location.href = "index.html"; // Normal sayfaya git
+                    window.location.href = "index.html";
                 }
             } else {
-                alert("Giriş başarısız!");
+                alert("Giriş başarısız! Kullanıcı adı veya şifre yanlış.");
             }
         }
 
         async function kayitOl() {
-            const kadi = document.getElementById("txtKadi").value.trim(); // .trim() baştaki sondaki boşlukları siler
+            const kadi = document.getElementById("txtKadi").value.trim();
             const sifre = document.getElementById("txtSifre").value.trim();
 
-            // BOŞLUK KONTROLÜ
             if (kadi === "" || sifre === "") {
                 alert("Lütfen kullanıcı adı ve şifre alanlarını doldurunuz!");
-                return; // Fonksiyonu burada durdur, sunucuya gitme
+                return;
             }
 
             const veri = { KullaniciAdi: kadi, Sifre: sifre };
@@ -89,6 +91,6 @@
             });
             alert(await response.text());
         }
-</script>
+    </script>
 </body>
 </html>

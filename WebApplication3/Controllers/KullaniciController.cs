@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient; // MSSQL kütüphanesi
+using Microsoft.Data.SqlClient;
 
 namespace WebApplication3.Controllers
 {
@@ -23,7 +23,7 @@ namespace WebApplication3.Controllers
                 return BadRequest("Kullanıcı adı ve şifre boş bırakılamaz.");
             }
 
-            // HATA BURADAYDI: Burada fazladan açılan '{' parantezi kaldırıldı.
+            // DÜZELTME: Buradaki fazladan '{' işareti kaldırıldı.
 
             string? baglantiDizesi = _configuration.GetConnectionString("KullaniciBaglanti");
 
@@ -56,7 +56,7 @@ namespace WebApplication3.Controllers
                     return StatusCode(500, "Hata: " + ex.Message);
                 }
             }
-        } // KayitOl metodu burada bitiyor
+        }
 
         [HttpPost("giris")]
         public IActionResult GirisYap([FromBody] KullaniciLoginModel model)
@@ -91,13 +91,10 @@ namespace WebApplication3.Controllers
             using (SqlConnection baglanti = new SqlConnection(baglantiDizesi))
             {
                 baglanti.Open();
-
-                // Transaction başlatıyoruz
                 SqlTransaction transaction = baglanti.BeginTransaction();
 
                 try
                 {
-                    // 1. ADIM: Önce kullanıcının favorilerini temizle
                     string favSilSql = "DELETE FROM Favoriler WHERE KullaniciId = @uid";
                     using (SqlCommand favKomut = new SqlCommand(favSilSql, baglanti, transaction))
                     {
@@ -105,7 +102,6 @@ namespace WebApplication3.Controllers
                         favKomut.ExecuteNonQuery();
                     }
 
-                    // 2. ADIM: Şimdi kullanıcının kendisini sil
                     string kulSilSql = "DELETE FROM Kullanicilar WHERE Id = @uid";
                     using (SqlCommand kulKomut = new SqlCommand(kulSilSql, baglanti, transaction))
                     {
@@ -134,26 +130,18 @@ namespace WebApplication3.Controllers
         public IActionResult SifreDegistir(SifreDegistirmeModel model)
         {
             string? baglantiDizesi = _configuration.GetConnectionString("KullaniciBaglanti");
-
             using (SqlConnection connection = new SqlConnection(baglantiDizesi))
             {
                 connection.Open();
-
-                // 1. Önce eski şifre doğru mu diye kontrol et
                 string kontrolSql = "SELECT COUNT(*) FROM Kullanicilar WHERE Id = @id AND Sifre = @eskiSifre";
                 using (SqlCommand komut = new SqlCommand(kontrolSql, connection))
                 {
                     komut.Parameters.AddWithValue("@id", model.KullaniciId);
                     komut.Parameters.AddWithValue("@eskiSifre", model.EskiSifre);
-
                     int dogruMu = (int)komut.ExecuteScalar();
-                    if (dogruMu == 0)
-                    {
-                        return BadRequest("Eski şifreniz hatalı. Lütfen tekrar deneyin.");
-                    }
+                    if (dogruMu == 0) return BadRequest("Eski şifreniz hatalı.");
                 }
 
-                // 2. Eski şifre doğruysa yenisiyle güncelle
                 string updateSql = "UPDATE Kullanicilar SET Sifre = @yeniSifre WHERE Id = @id";
                 using (SqlCommand updateKomut = new SqlCommand(updateSql, connection))
                 {
@@ -162,7 +150,6 @@ namespace WebApplication3.Controllers
                     updateKomut.ExecuteNonQuery();
                 }
             }
-
             return Ok("Şifreniz başarıyla değiştirildi.");
         }
     }
@@ -176,7 +163,7 @@ namespace WebApplication3.Controllers
     public class SifreDegistirmeModel
     {
         public int KullaniciId { get; set; }
-        public string? EskiSifre { get; set; }
-        public string? YeniSifre { get; set; }
+        public string? EskiSifre { get; set; } // Soru işareti eklendi (sarı uyarı gitmesi için)
+        public string? YeniSifre { get; set; } // Soru işareti eklendi
     }
 }
