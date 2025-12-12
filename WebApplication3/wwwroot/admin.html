@@ -78,6 +78,7 @@
 
         <h3>Anlam Güncelle</h3>
         <input type="text" id="guncelKelime" placeholder="Hangi Kelime? (Örn: Server)">
+        <button onclick="kelimeGetir()" style="width: 80px; background-color: #3498db; margin: 10px 0;">Getir</button>
         <textarea id="guncelAnlam" placeholder="Yeni Anlamı..."></textarea>
         <button class="btn-guncelle" onclick="kelimeGuncelle()">Anlamı Değiştir</button>
 
@@ -125,6 +126,22 @@
         function cikisYap() {
             localStorage.clear();
             window.location.href = "giris.html";
-        }</script>
+        }
+
+        async function kelimeGetir() {
+            const kelime = document.getElementById("guncelKelime").value;
+            if (!kelime) { alert("Kelime yazın."); return; }
+
+            const response = await fetch('/api/sozluk/' + kelime);
+            if (response.ok) {
+                const anlam = await response.text();
+                document.getElementById("guncelAnlam").value = anlam;
+            } else {
+                alert("Kelime bulunamadı, önce eklemelisiniz.");
+                document.getElementById("guncelAnlam").value = "";
+            }
+        }
+
+    </script>
 </body>
 </html>

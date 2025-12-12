@@ -58,9 +58,36 @@ namespace WebApplication3.Controllers
             }
         }
 
+        [HttpGet("ara")]
+        public IActionResult KelimeAra([FromQuery] string sorgu)
+        {
+            if (string.IsNullOrEmpty(sorgu) || sorgu.Length < 2) return Ok(new List<string>());
+
+            var oneriler = new List<string>();
+            string? baglantiDizesi = _configuration.GetConnectionString("SozlukBaglanti");
+
+            using (SqlConnection baglanti = new SqlConnection(baglantiDizesi))
+            {
+                baglanti.Open();
+                // SQL Injection'a karşı parametre kullanımı ve 'LIKE' sorgusu
+                string sql = "SELECT TOP 5 Kelime FROM Kelimeler WHERE Kelime LIKE @sorgu + '%'";
+                using (SqlCommand komut = new SqlCommand(sql, baglanti))
+                {
+                    komut.Parameters.AddWithValue("@sorgu", sorgu);
+                    using (SqlDataReader okuyucu = komut.ExecuteReader())
+                    {
+                        while (okuyucu.Read())
+                        {
+                            oneriler.Add(okuyucu.GetString(0));
+                        }
+                    }
+                }
+            }
+            return Ok(oneriler);
+        }
 
         [HttpPost]
-        public IActionResult PostKelime([FromBody] YeniKelimeRequest yeniKelime)    //bu fonksiyon şu anda kullanım dışında
+        public IActionResult PostKelime([FromBody] YeniKelimeRequest yeniKelime)
         {
             if (yeniKelime == null || string.IsNullOrEmpty(yeniKelime.Kelime) || string.IsNullOrEmpty(yeniKelime.Anlam))
             {
@@ -152,6 +179,72 @@ namespace WebApplication3.Controllers
             }
 
             return Ok("Kelime anlamı başarıyla güncellendi.");
+        }
+
+        [HttpGet("harf/{basHarf}")]
+        public IActionResult GetKelimelerByHarf(string basHarf)
+        {
+            var kelimeler = new List<string>();
+            string? baglantiDizesi = _configuration.GetConnectionString("SozlukBaglanti");
+
+            using (SqlConnection baglanti = new SqlConnection(baglantiDizesi))
+            {
+                baglanti.Open();
+                string sql = "SELECT Kelime FROM Kelimeler WHERE Kelime LIKE @harf + '%' ORDER BY Kelime";
+                using (SqlCommand komut = new SqlCommand(sql, baglanti))
+                {
+                    komut.Parameters.AddWithValue("@harf", basHarf);
+                    using (SqlDataReader okuyucu = komut.ExecuteReader())
+                    {
+                        while (okuyucu.Read())
+                        {
+                            kelimeler.Add(okuyucu.GetString(0));
+                        }
+                    }
+                }
+            }
+            return Ok(kelimeler);
+        }
+
+        [HttpPost("oner")]
+        public IActionResult KelimeOner([FromBody] OneriModel model)
+        {
+            if (string.IsNullOrEmpty(model.Kelime) || string.IsNullOrEmpty(model.Anlam))
+            {
+                return BadRequest("Kelime ve anlam boş olamaz.");
+            }
+
+            string? baglantiDizesi = _configuration.GetConnectionString("SozlukBaglanti");
+            using (SqlConnection baglanti = new SqlConnection(baglantiDizesi))
+            {
+                try
+                {
+                    baglanti.Open();
+                    // Aynı kelime zaten önerilmiş mi veya sözlükte var mı kontrolü yapılabilir (İsteğe bağlı)
+
+                    string sql = "INSERT INTO KelimeOnerileri (KullaniciId, Kelime, OnerilenAnlam) VALUES (@uid, @kelime, @anlam)";
+                    using (SqlCommand komut = new SqlCommand(sql, baglanti))
+                    {
+                        komut.Parameters.AddWithValue("@uid", model.KullaniciId);
+                        komut.Parameters.AddWithValue("@kelime", model.Kelime);
+                        komut.Parameters.AddWithValue("@anlam", model.Anlam);
+                        komut.ExecuteNonQuery();
+                    }
+                    return Ok("Öneriniz alındı, admin onayından sonra yayınlanacaktır.");
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, "Hata: " + ex.Message);
+                }
+            }
+        }
+
+        // Dosyanın en altına (namespace içine) bu modeli ekleyin:
+        public class OneriModel
+        {
+            public int KullaniciId { get; set; }
+            public string? Kelime { get; set; }
+            public string? Anlam { get; set; }
         }
     }
 }
