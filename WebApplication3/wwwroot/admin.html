@@ -7,11 +7,16 @@
     <style>
         body {
             font-family: sans-serif;
+            /* Flex yapısını koruyalım ama dikey hizalamayı kaldıralım */
             display: flex;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
+            /* align-items: center;  <-- Bunu siliyoruz */
+            /* Yükseklik sınırını kaldırıp minimum yükseklik verelim */
+            min-height: 100vh;
+            /* Üstten ve alttan boşluk bırakalım ki yapışmasın */
+            padding: 40px 0;
             background-color: #2c3e50;
+            margin: 0; /* Tarayıcı varsayılan boşluğunu sıfırla */
         }
 
         .panel {
@@ -83,6 +88,27 @@
         <button class="btn-guncelle" onclick="kelimeGuncelle()">Anlamı Değiştir</button>
 
         <button class="btn-cikis" onclick="cikisYap()">Çıkış Yap</button>
+
+        <hr>
+
+        <h3>📩 Kullanıcılardan Gelen Öneriler</h3>
+        <div id="oneriTablosuAlani">
+            <table border="1" style="width:100%; border-collapse: collapse; text-align: left;">
+                <thead>
+                    <tr style="background-color: #ecf0f1;">
+                        <th style="padding:8px;">Gönderen</th>
+                        <th style="padding:8px;">Kelime</th>
+                        <th style="padding:8px;">Anlam</th>
+                        <th style="padding:8px;">İşlem</th>
+                    </tr>
+                </thead>
+                <tbody id="oneriListesiGovdesi">
+                </tbody>
+            </table>
+            <p id="oneriBilgi" style="color:#777; font-size:0.9em; margin-top:10px;">Yükleniyor...</p>
+        </div>
+
+        <br><br>
     </div>
 
     <script>// KELİME EKLEME FONKSİYONU
@@ -139,6 +165,66 @@
             } else {
                 alert("Kelime bulunamadı, önce eklemelisiniz.");
                 document.getElementById("guncelAnlam").value = "";
+            }
+        }
+
+        // Sayfa açılınca önerileri çek
+        document.addEventListener("DOMContentLoaded", function () {
+            onerileriGetir();
+        });
+
+        async function onerileriGetir() {
+            const tabloGovdesi = document.getElementById("oneriListesiGovdesi");
+            const bilgi = document.getElementById("oneriBilgi");
+
+            tabloGovdesi.innerHTML = "";
+            bilgi.innerText = "Yükleniyor...";
+
+            try {
+                const response = await fetch('/api/sozluk/oneriler/bekleyen');
+                const veriler = await response.json();
+
+                if (veriler.length === 0) {
+                    bilgi.innerText = "Bekleyen öneri yok.";
+                    return;
+                }
+
+                bilgi.style.display = "none"; // Bilgi yazısını gizle
+
+                veriler.forEach(veri => {
+                    const satir = document.createElement("tr");
+
+                    satir.innerHTML = `
+                <td style="padding:8px;"><b>${veri.gonderen}</b></td>
+                <td style="padding:8px; color:#2980b9;">${veri.kelime}</td>
+                <td style="padding:8px;">${veri.anlam}</td>
+                <td style="padding:8px;">
+                    <button onclick="oneriOnayla(${veri.id}, '${veri.kelime}', '${veri.anlam}')" style="background:#27ae60; padding:5px; width:auto; font-size:0.8em; margin-bottom:5px;">Onayla</button>
+                    <button onclick="oneriReddet(${veri.id})" style="background:#c0392b; padding:5px; width:auto; font-size:0.8em;">Reddet</button>
+                </td>
+            `;
+                    tabloGovdesi.appendChild(satir);
+                });
+
+            } catch (err) {
+                bilgi.innerText = "Hata: " + err;
+            }
+        }
+
+        // Şimdilik sadece alert veren fonksiyonlar (Backend'i sonra yazılabilir)
+        async function oneriOnayla(id, kelime, anlam) {
+            if (confirm(kelime + " kelimesi sözlüğe eklensin mi?")) {
+                // Buraya onaylama API isteği gelecek
+                // 1. Kelimeler tablosuna ekle
+                // 2. KelimeOnerileri tablosunda durumunu 'Onaylandi' yap
+                alert("Bu özellik henüz backend'e bağlanmadı, ama arayüz hazır!");
+            }
+        }
+
+        async function oneriReddet(id) {
+            if (confirm("Bu öneriyi reddetmek istiyor musunuz?")) {
+                // Buraya reddetme API isteği gelecek
+                alert("Silme işlemi backend kodu yazılınca çalışacak.");
             }
         }
 

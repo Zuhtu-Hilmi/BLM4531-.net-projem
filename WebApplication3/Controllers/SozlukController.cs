@@ -272,6 +272,46 @@ namespace WebApplication3.Controllers
             return Ok(kelimeler);
         }
 
+        [HttpGet("oneriler/bekleyen")]
+        public IActionResult GetBekleyenOneriler()
+        {
+            var oneriler = new List<object>();
+            string? baglantiDizesi = _configuration.GetConnectionString("SozlukBaglanti");
+
+            using (SqlConnection baglanti = new SqlConnection(baglantiDizesi))
+            {
+                baglanti.Open();
+
+                // ÇAPRAZ VERİTABANI SORGUSU:
+                // 'o' -> KelimeOnerileri (sozluk veritabanında)
+                // 'k' -> Kullanicilar (SozlukKullanici veritabanında)
+                string sql = @"
+            SELECT o.Id, o.Kelime, o.OnerilenAnlam, k.KullaniciAdi 
+            FROM KelimeOnerileri o
+            INNER JOIN SozlukKullanici.dbo.Kullanicilar k ON o.KullaniciId = k.Id
+            WHERE o.Durum = 'Beklemede'
+            ORDER BY o.Id DESC";
+
+                using (SqlCommand komut = new SqlCommand(sql, baglanti))
+                {
+                    using (SqlDataReader okuyucu = komut.ExecuteReader())
+                    {
+                        while (okuyucu.Read())
+                        {
+                            oneriler.Add(new
+                            {
+                                Id = okuyucu.GetInt32(0),
+                                Kelime = okuyucu.GetString(1),
+                                Anlam = okuyucu.GetString(2),
+                                Gonderen = okuyucu.GetString(3) // Kullanıcı Adı
+                            });
+                        }
+                    }
+                }
+            }
+            return Ok(oneriler);
+        }
+
         // Dosyanın en altına (namespace içine) bu modeli ekleyin:
         public class OneriModel
         {

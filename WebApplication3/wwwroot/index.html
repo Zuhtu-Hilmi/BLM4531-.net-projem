@@ -180,6 +180,56 @@
             .btn-fav-sil:hover {
                 background-color: #ffcdd2;
             }
+
+        /* Arama Alanı Kapsayıcısı (Konumlandırma için gerekli) */
+        .arama-wrapper {
+            position: relative;
+            display: inline-block;
+            width: 70%;
+        }
+
+        /* Öneri Kutusu (Başlangıçta gizli) */
+        .oneri-kutusu {
+            position: absolute;
+            top: 100%; /* Inputun tam altında başla */
+            left: 0;
+            right: 0;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 8px 8px; /* Alt köşeleri yuvarla */
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 1000; /* Diğer her şeyin üstünde dursun */
+            display: none; /* Varsayılan olarak gizli */
+            max-height: 250px; /* Çok uzarsa kaydırma çubuğu çıksın */
+            overflow-y: auto;
+        }
+
+        /* Öneri Satırları */
+        .oneri-satir {
+            padding: 12px 15px;
+            cursor: pointer;
+            border-bottom: 1px solid #f5f5f5;
+            color: #333;
+            text-align: left;
+            transition: background 0.2s;
+        }
+
+            .oneri-satir:last-child {
+                border-bottom: none;
+            }
+
+            .oneri-satir:hover {
+                background-color: #f0f8ff; /* Üzerine gelince açık mavi olsun */
+                color: #007bff;
+                font-weight: 500;
+            }
+
+        /* Eşleşen kısmın kalın olması için (Opsiyonel ama şık durur) */
+        .kalin-yazi {
+            font-weight: bold;
+            color: #000;
+        }
     </style>
 </head>
 
@@ -223,8 +273,11 @@
 
     <p>Aradığınız kelimenin anlamını, dikkat dağıtıcı hiçbir unsur olmadan anında öğrenin.</p>
 
-    <input type="text" id="txtKelime" list="onerilerListesi" placeholder="Kelime girin..." autocomplete="off" />
-    <datalist id="onerilerListesi"></datalist>
+    <div class="arama-wrapper">
+        <input type="text" id="txtKelime" placeholder="Kelime girin..." autocomplete="off" style="width: 100%; box-sizing: border-box;" />
+
+        <div id="ozelOneriKutusu" class="oneri-kutusu"></div>
+    </div>
 
     <button id="btnAra">Ara</button>
 
@@ -269,20 +322,55 @@
 
         araButonu.addEventListener("click", aramaYap);
         kelimeKutusu.addEventListener("keypress", function (e) { if (e.key === "Enter") aramaYap(); });
+        // Arama inputu dinleyicisi (GÜNCELLENMİŞ)
         kelimeKutusu.addEventListener("input", async function () {
             const sorgu = this.value;
-            if (sorgu.length < 2) return;
+            const kutu = document.getElementById("ozelOneriKutusu");
+
+            if (sorgu.length < 2) {
+                kutu.style.display = "none";
+                return;
+            }
 
             const response = await fetch(`/api/sozluk/ara?sorgu=${sorgu}`);
             if (response.ok) {
                 const kelimeler = await response.json();
-                const liste = document.getElementById("onerilerListesi");
-                liste.innerHTML = ""; // Eski önerileri temizle
-                kelimeler.forEach(k => {
-                    const option = document.createElement("option");
-                    option.value = k;
-                    liste.appendChild(option);
-                });
+
+                kutu.innerHTML = ""; // İçini temizle
+
+                if (kelimeler.length > 0) {
+                    kutu.style.display = "block"; // Kutuyu göster
+
+                    kelimeler.forEach(k => {
+                        const satir = document.createElement("div");
+                        satir.className = "oneri-satir";
+
+                        // Kelimeyi yaz (Aranan kısmı kalın yapabiliriz basitçe)
+                        satir.innerText = k;
+
+                        // Tıklama olayı
+                        satir.onclick = function () {
+                            kelimeKutusu.value = k; // Inputa yaz
+                            kutu.style.display = "none"; // Kutuyu gizle
+                            aramaYap(); // Otomatik aramayı başlat
+                        };
+
+                        kutu.appendChild(satir);
+                    });
+                } else {
+                    kutu.style.display = "none"; // Sonuç yoksa gizle
+                }
+            }
+        });
+
+        // Ekranda boş bir yere tıklayınca öneri kutusunu kapatma
+        document.addEventListener("click", function (e) {
+            const kutu = document.getElementById("ozelOneriKutusu");
+            const input = document.getElementById("txtKelime");
+
+            // Eğer tıklanan yer kutu veya input değilse kapat
+            if (e.target !== kutu && e.target !== input) {
+                kutu.style.display = "none";
             }
         });
 
@@ -368,10 +456,10 @@
 
                 if (veriler.length === 0) {
                     gridContainer.innerHTML = `
-                <div style="grid-column: 1 / -1; text-align: center; color: #777; padding: 20px;">
-                    Henüz hiç favori kelimeniz yok. <br> 
-                    <small>Beğendiğiniz kelimeleri aratıp "Favorilere Ekle" diyebilirsiniz.</small>
-                </div>`;
+                        <div style="grid-column: 1 / -1; text-align: center; color: #777; padding: 20px;">
+                            Henüz hiç favori kelimeniz yok. <br>
+                            <small>Beğendiğiniz kelimeleri aratıp "Favorilere Ekle" diyebilirsiniz.</small>
+                        </div>`;
                     return;
                 }
 
@@ -379,10 +467,10 @@
                     const kart = document.createElement("div");
                     kart.className = "favori-kart";
                     kart.innerHTML = `
-                <span class="fav-kelime">${fav.kelime}</span>
-                <span class="fav-anlam">${fav.anlam}</span>
-                <button onclick="favoriSil(${fav.id})" class="btn-fav-sil">🗑️ Sil</button>
-            `;
+                        <span class="fav-kelime">${fav.kelime}</span>
+                        <span class="fav-anlam">${fav.anlam}</span>
+                        <button onclick="favoriSil(${fav.id})" class="btn-fav-sil">🗑️ Sil</button>
+                    `;
                     gridContainer.appendChild(kart);
                 });
 
@@ -545,11 +633,11 @@
 
                     // HTML Yapısı: "Görmek için tıkla" yazısını kaldırdık, daha sade oldu.
                     satir.innerHTML = `
-                <span class="kelime-baslik">${item.kelime}</span>
-                <span class="gizli-anlam" title="Görmek için tıkla" onclick="this.className='acik-anlam'">
-                    ${item.anlam} 
-                </span>
-            `;
+                        <span class="kelime-baslik">${item.kelime}</span>
+                        <span class="gizli-anlam" title="Görmek için tıkla" onclick="this.className='acik-anlam'">
+                            ${item.anlam}
+                        </span>
+                    `;
                     listeAlani.appendChild(satir);
                 });
 
