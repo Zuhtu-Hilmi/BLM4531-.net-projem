@@ -60,31 +60,50 @@
                 color: white;
             }
 
-        /* Liste öğesi stili */
+        /* Liste öğesi stili - GÜNCELLENDİ */
         .liste-satir {
             border-bottom: 1px solid #eee;
-            padding: 10px 0;
+            padding: 15px 10px; /* Biraz daha boşluk verdik */
             display: flex;
-            flex-direction: column; /* Alt alta olsun */
+            flex-direction: row; /* YAN YANA OLMASINI SAĞLAYAN KOD */
+            justify-content: space-between; /* Biri en sola, biri en sağa yaslansın */
+            align-items: center; /* Dikey olarak ortalansın */
+            gap: 20px; /* Kelime ile anlam birbirine yapışmasın */
         }
 
         .kelime-baslik {
             font-weight: bold;
             font-size: 1.1em;
             color: #2c3e50;
-            margin-bottom: 5px;
+            margin-bottom: 0; /* Alt boşluğu sıfırladık */
+            min-width: 120px; /* Kelime alanı için minimum bir genişlik */
         }
 
-        /* GİZLİ ANLAM EFEKTİ */
+        /* GİZLİ ANLAM EFEKTİ - GÜNCELLENDİ */
         .gizli-anlam {
-            background-color: #e0e0e0; /* Gri arka plan */
-            color: transparent; /* Yazı görünmez */
-            text-shadow: 0 0 8px rgba(0,0,0,0.5); /* Bulanık efekt */
+            background-color: #e0e0e0;
+            color: transparent;
+            text-shadow: 0 0 8px rgba(0,0,0,0.5);
             cursor: pointer;
-            padding: 5px;
+            padding: 8px 12px; /* Kutu biraz daha dolgun olsun */
             border-radius: 4px;
-            user-select: none; /* Seçilmeyi engelle */
+            user-select: none;
             transition: all 0.3s ease;
+            flex: 1; /* Kalan boşluğun tamamını kaplasın */
+            text-align: right; /* Metin sağ tarafta dursun */
+        }
+
+        /* TIKLANINCA GÖRÜNÜR HALİ - DÜZELTİLDİ */
+        .acik-anlam {
+            background-color: transparent;
+            color: #555;
+            text-shadow: none;
+            cursor: default;
+            /* Aşağıdaki özellikler kutunun boyutunu korumasını sağlar */
+            padding: 8px 12px; /* Gizli haliyle aynı boşluk */
+            flex: 1; /* Aynı genişleme oranı */
+            text-align: right; /* Aynı hizalama */
+            border-radius: 4px;
         }
 
         /* TIKLANINCA GÖRÜNÜR HALİ */
@@ -523,11 +542,12 @@
                 veri.forEach(item => {
                     const satir = document.createElement("div");
                     satir.className = "liste-satir";
+
+                    // HTML Yapısı: "Görmek için tıkla" yazısını kaldırdık, daha sade oldu.
                     satir.innerHTML = `
                 <span class="kelime-baslik">${item.kelime}</span>
-                <span class="gizli-anlam" onclick="this.className='acik-anlam'">
+                <span class="gizli-anlam" title="Görmek için tıkla" onclick="this.className='acik-anlam'">
                     ${item.anlam} 
-                    <small style="display:block; font-size:0.7em; color:#999; margin-top:5px;">(Görmek için tıkla)</small>
                 </span>
             `;
                     listeAlani.appendChild(satir);
