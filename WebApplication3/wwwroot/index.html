@@ -44,6 +44,123 @@
             border-bottom: 2px solid #eee;
             padding-bottom: 10px;
         }
+
+        /* Harf butonları için stil */
+        .harf-butonu {
+            padding: 5px 10px;
+            margin: 2px;
+            border: 1px solid #ddd;
+            background: #fff;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+
+            .harf-butonu:hover {
+                background-color: #007bff;
+                color: white;
+            }
+
+        /* Liste öğesi stili */
+        .liste-satir {
+            border-bottom: 1px solid #eee;
+            padding: 10px 0;
+            display: flex;
+            flex-direction: column; /* Alt alta olsun */
+        }
+
+        .kelime-baslik {
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        /* GİZLİ ANLAM EFEKTİ */
+        .gizli-anlam {
+            background-color: #e0e0e0; /* Gri arka plan */
+            color: transparent; /* Yazı görünmez */
+            text-shadow: 0 0 8px rgba(0,0,0,0.5); /* Bulanık efekt */
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            user-select: none; /* Seçilmeyi engelle */
+            transition: all 0.3s ease;
+        }
+
+        /* TIKLANINCA GÖRÜNÜR HALİ */
+        .acik-anlam {
+            background-color: transparent;
+            color: #555;
+            text-shadow: none;
+            cursor: default;
+        }
+
+        #fihristListesi {
+            margin-top: 20px;
+            text-align: left;
+            min-height: 800px; /* ÖNEMLİ: Sayfanın zıplamasını engelleyen satır */
+        }
+
+        /* Favori Izgara Yapısı */
+        .favori-grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Ekrana sığdığı kadar yan yana koy */
+            gap: 15px;
+            padding: 10px 0;
+        }
+
+        /* Kart Tasarımı */
+        .favori-kart {
+            background: #fff;
+            border: 1px solid #e1e4e8;
+            border-left: 5px solid #f1c40f; /* Sol tarafa sarı çizgi */
+            border-radius: 8px;
+            padding: 15px;
+            position: relative;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+            .favori-kart:hover {
+                transform: translateY(-3px); /* Üzerine gelince yukarı kalksın */
+                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            }
+
+        .fav-kelime {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #2c3e50;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .fav-anlam {
+            font-size: 0.95em;
+            color: #555;
+            line-height: 1.4;
+            margin-bottom: 25px; /* Sil butonu için yer aç */
+            display: block;
+        }
+
+        /* Silme Butonu */
+        .btn-fav-sil {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background-color: #ffebee;
+            color: #c62828;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+            .btn-fav-sil:hover {
+                background-color: #ffcdd2;
+            }
     </style>
 </head>
 
@@ -92,10 +209,6 @@
 
     <button id="btnAra">Ara</button>
 
-    <div id="harfMenusu" style="margin-top: 15px; word-spacing: 5px;">
-    </div>
-    <div id="fihristSonuc" style="display:none; background:#fff; border:1px solid #ddd; padding:10px; margin-top:10px; max-height:200px; overflow-y:auto;"></div>
-
     <hr style="border: none; border-top: 1px solid #eee; margin-top: 25px;">
 
     <div id="sonucAlani">
@@ -108,7 +221,16 @@
 
     <div id="favoriListesiAlani" style="margin-top:30px; display:none; border-top:1px solid #eee; padding-top:20px;">
         <h3>Favorilerim</h3>
-        <ul id="liste" style="list-style:none; padding:0;"></ul>
+        <div id="favoriGrid" class="favori-grid-container"></div>
+    </div>
+
+    <div id="harfAlani" style="margin-top: 30px; text-align: center;">
+        <h3>Fihrist & Çalışma Modu</h3>
+        <p style="font-size: 0.9em; color: #666;">Bir harfe basın. Anlamı görmek için bulanık alana tıklayın.</p>
+        <div id="harfButonlari"></div>
+    </div>
+
+    <div id="fihristListesi" style="margin-top: 20px; text-align: left;">
     </div>
 
     <script>
@@ -145,7 +267,7 @@
             }
         });
 
-        // Global değişkenler (Favori eklerken kullanmak için)
+        // Global değişkenler
         let sonArananKelime = "";
         let sonBulunanAnlam = "";
 
@@ -153,7 +275,6 @@
             var kelime = kelimeKutusu.value.trim();
             if (kelime === "") return;
 
-            // Ekranı temizle
             sonucAlani.innerText = "Aranıyor...";
             btnFavori.style.display = "none";
             document.getElementById("favoriListesiAlani").style.display = "none";
@@ -164,12 +285,9 @@
                     const anlam = await response.text();
                     sonucAlani.style.color = "#000";
                     sonucAlani.innerText = anlam;
-
-                    // Kelime bulunduysa değişkenlere ata
                     sonArananKelime = kelime;
                     sonBulunanAnlam = anlam;
 
-                    // SADECE kullanıcı giriş yapmışsa butonu göster
                     if (kullaniciId) {
                         btnFavori.style.display = "block";
                     }
@@ -182,9 +300,9 @@
             }
         }
 
-        // Favori Ekleme Fonksiyonu
+        // Favori İşlemleri
         btnFavori.addEventListener("click", async function () {
-            if (!kullaniciId) return; // Güvenlik
+            if (!kullaniciId) return;
 
             const veri = {
                 KullaniciId: parseInt(kullaniciId),
@@ -202,52 +320,78 @@
             else alert(await response.text());
         });
 
-        // Favorileri Listeleme
         async function favorileriGoster() {
-            const div = document.getElementById("favoriListesiAlani");
-            const liste = document.getElementById("liste");
-            div.style.display = "block";
-            liste.innerHTML = "Yükleniyor...";
+            const divAlani = document.getElementById("favoriListesiAlani");
 
-            const response = await fetch('/api/favori/listele/' + kullaniciId);
-            const veriler = await response.json();
+            // --- YENİ EKLENEN KISIM: AÇ/KAPA KONTROLÜ ---
+            if (divAlani.style.display === "block") {
+                divAlani.style.display = "none";
+                return; // Fonksiyondan çık (Veri çekmeye gerek yok)
+            }
+            // --------------------------------------------
 
-            liste.innerHTML = "";
-            veriler.forEach(fav => {
-                const li = document.createElement("li");
-                li.style.marginBottom = "10px";
-                li.style.borderBottom = "1px solid #eee";
-                li.innerHTML = `<b>${fav.kelime}</b>: ${fav.anlam.substring(0, 50)}... <button onclick="favoriSil(${fav.id})" style="color:red; border:none; background:none; cursor:pointer;">Sil</button>`;
-                liste.appendChild(li);
-            });
+            const gridContainer = document.getElementById("favoriGrid");
+
+            // Alanı görünür yap
+            divAlani.style.display = "block";
+            gridContainer.innerHTML = "<p style='width:100%; text-align:center;'>Yükleniyor...</p>";
+
+            try {
+                const response = await fetch('/api/favori/listele/' + kullaniciId);
+
+                if (!response.ok) {
+                    gridContainer.innerHTML = "<p>Favoriler yüklenirken hata oluştu.</p>";
+                    return;
+                }
+
+                const veriler = await response.json();
+                gridContainer.innerHTML = "";
+
+                if (veriler.length === 0) {
+                    gridContainer.innerHTML = `
+                <div style="grid-column: 1 / -1; text-align: center; color: #777; padding: 20px;">
+                    Henüz hiç favori kelimeniz yok. <br> 
+                    <small>Beğendiğiniz kelimeleri aratıp "Favorilere Ekle" diyebilirsiniz.</small>
+                </div>`;
+                    return;
+                }
+
+                veriler.forEach(fav => {
+                    const kart = document.createElement("div");
+                    kart.className = "favori-kart";
+                    kart.innerHTML = `
+                <span class="fav-kelime">${fav.kelime}</span>
+                <span class="fav-anlam">${fav.anlam}</span>
+                <button onclick="favoriSil(${fav.id})" class="btn-fav-sil">🗑️ Sil</button>
+            `;
+                    gridContainer.appendChild(kart);
+                });
+
+                divAlani.scrollIntoView({ behavior: 'smooth' });
+
+            } catch (err) {
+                gridContainer.innerHTML = "Bağlantı hatası: " + err;
+            }
         }
 
         async function favoriSil(id) {
             if (confirm("Silmek istediğine emin misin?")) {
                 await fetch('/api/favori/sil/' + id, { method: 'DELETE' });
-                favorileriGoster(); // Listeyi yenile
+                favorileriGoster();
             }
         }
 
+        // Hesap Silme
         async function hesapSil() {
-            // 1. Kullanıcıdan onay al
-            if (!confirm("DİKKAT! Hesabınız ve tüm favorileriniz kalıcı olarak silinecek. Emin misiniz?")) {
-                return; // Vazgeçti
-            }
-
+            if (!confirm("DİKKAT! Hesabınız ve tüm favorileriniz kalıcı olarak silinecek. Emin misiniz?")) return;
             if (!kullaniciId) return;
 
-            // 2. API'ye silme isteği gönder
             try {
-                const response = await fetch('/api/kullanici/sil/' + kullaniciId, {
-                    method: 'DELETE'
-                });
-
+                const response = await fetch('/api/kullanici/sil/' + kullaniciId, { method: 'DELETE' });
                 if (response.ok) {
-                    alert("Hesabınız silindi. Üzüldük :( Ana sayfaya yönlendiriliyorsunuz.");
-                    // 3. Tarayıcı hafızasını temizle ve çıkış yap
+                    alert("Hesabınız silindi.");
                     localStorage.removeItem("sozluk_uid");
-                    localStorage.removeItem("sozluk_kadi"); // Eğer kaydettiysen
+                    localStorage.removeItem("sozluk_kadi");
                     window.location.reload();
                 } else {
                     alert("Hata oluştu: " + await response.text());
@@ -262,102 +406,53 @@
             window.location.reload();
         }
 
-        // Şifre formunu açıp kapatmaya yarayan basit fonksiyon
+        // Şifre ve Öneri Formu Kontrolleri
         function formuGosterGizle() {
             const form = document.getElementById("sifreDegistirmeFormu");
+            document.getElementById("oneriFormu").style.display = "none"; // Diğerini kapat
             if (form.style.display === "none") {
                 form.style.display = "block";
             } else {
                 form.style.display = "none";
-                // Kapatırken içini temizleyelim
                 document.getElementById("txtEskiSifre").value = "";
                 document.getElementById("txtYeniSifre").value = "";
             }
         }
 
-        // Backend'e isteği gönderen fonksiyon
+        function oneriFormuGoster() {
+            const form = document.getElementById("oneriFormu");
+            document.getElementById("sifreDegistirmeFormu").style.display = "none"; // Diğerini kapat
+            if (form.style.display === "none") {
+                form.style.display = "block";
+            } else {
+                form.style.display = "none";
+            }
+        }
+
         async function sifreGuncelle() {
             const eskiSifre = document.getElementById("txtEskiSifre").value;
             const yeniSifre = document.getElementById("txtYeniSifre").value;
 
-            if (!eskiSifre || !yeniSifre) {
-                alert("Lütfen tüm alanları doldurun.");
-                return;
-            }
+            if (!eskiSifre || !yeniSifre) { alert("Lütfen tüm alanları doldurun."); return; }
 
             try {
                 const response = await fetch('/api/kullanici/sifre-degistir', {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        KullaniciId: localStorage.getItem('sozluk_uid'), // ID'yi localstorage'dan alıyoruz
+                        KullaniciId: localStorage.getItem('sozluk_uid'),
                         EskiSifre: eskiSifre,
                         YeniSifre: yeniSifre
                     })
                 });
 
                 if (response.ok) {
-                    alert("Şifreniz başarıyla değiştirildi!");
-                    formuGosterGizle(); // Formu kapat
+                    alert("Şifreniz değiştirildi!");
+                    formuGosterGizle();
                 } else {
-                    // Backend'den gelen hatayı göster (Örn: Eski şifre yanlış)
-                    const hataMesaji = await response.text();
-                    alert("Hata: " + hataMesaji);
+                    alert("Hata: " + await response.text());
                 }
-            } catch (err) {
-                alert("Bir sorun oluştu: " + err);
-            }
-        }
-
-        function harfMenusuOlustur() {
-            const alfabe = "ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ";
-            const menu = document.getElementById("harfMenusu");
-
-            alfabe.split("").forEach(harf => {
-                const btn = document.createElement("button");
-                btn.innerText = harf;
-                btn.style.cursor = "pointer";
-                btn.style.padding = "5px";
-                btn.style.border = "1px solid #ccc";
-                btn.style.backgroundColor = "#fff";
-
-                btn.onclick = async () => {
-                    const sonucDiv = document.getElementById("fihristSonuc");
-                    sonucDiv.style.display = "block";
-                    sonucDiv.innerHTML = "Yükleniyor...";
-
-                    const res = await fetch(`/api/sozluk/harf/${harf}`);
-                    const data = await res.json();
-
-                    if (data.length === 0) {
-                        sonucDiv.innerHTML = "Bu harfle başlayan kelime yok.";
-                    } else {
-                        // Kelimelere tıklayınca aramaya atalım
-                        sonucDiv.innerHTML = data.map(k => `<span onclick="kelimeSec('${k}')" style="cursor:pointer; color:blue; margin-right:10px;">${k}</span>`).join(", ");
-                    }
-                };
-                menu.appendChild(btn);
-            });
-        }
-
-        function kelimeSec(k) {
-            document.getElementById("txtKelime").value = k;
-            document.getElementById("btnAra").click();
-        }
-
-        // Sayfa açılışında çalıştır
-        harfMenusuOlustur();
-
-        function oneriFormuGoster() {
-            const form = document.getElementById("oneriFormu");
-            // Diğer form açıksa kapatalım
-            document.getElementById("sifreDegistirmeFormu").style.display = "none";
-
-            if (form.style.display === "none") {
-                form.style.display = "block";
-            } else {
-                form.style.display = "none";
-            }
+            } catch (err) { alert("Bir sorun oluştu: " + err); }
         }
 
         async function oneriGonder() {
@@ -365,35 +460,90 @@
             const anlam = document.getElementById("txtOneriAnlam").value;
             const uid = localStorage.getItem("sozluk_uid");
 
-            if (!kelime || !anlam) {
-                alert("Lütfen tüm alanları doldurun.");
-                return;
-            }
+            if (!kelime || !anlam) { alert("Lütfen tüm alanları doldurun."); return; }
 
             try {
                 const response = await fetch('/api/sozluk/oner', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        KullaniciId: parseInt(uid),
-                        Kelime: kelime,
-                        Anlam: anlam
-                    })
+                    body: JSON.stringify({ KullaniciId: parseInt(uid), Kelime: kelime, Anlam: anlam })
                 });
 
                 if (response.ok) {
                     alert(await response.text());
-                    oneriFormuGoster(); // Formu kapat
+                    oneriFormuGoster();
                     document.getElementById("txtOneriKelime").value = "";
                     document.getElementById("txtOneriAnlam").value = "";
                 } else {
                     alert("Hata: " + await response.text());
                 }
+            } catch (err) { alert("Bağlantı hatası: " + err); }
+        }
+
+
+        // TEK VE TEMİZ ALFABE FONKSİYONU (Güncellenmiş)
+        function harfleriOlustur() {
+            const alfabe = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const container = document.getElementById("harfButonlari");
+
+            alfabe.split("").forEach(harf => {
+                const btn = document.createElement("button");
+                btn.innerText = harf;
+                btn.className = "harf-butonu";
+                // type="button" ekleyerek form davranışı varsa engelleriz
+                btn.type = "button";
+
+                btn.onclick = (e) => {
+                    // 1. Zıplamayı engelle
+                    e.preventDefault();
+                    // 2. Verileri getir
+                    kelimeleriGetir(harf);
+                };
+                container.appendChild(btn);
+            });
+        }
+
+        async function kelimeleriGetir(harf) {
+            const listeAlani = document.getElementById("fihristListesi");
+
+            // Yükleniyor yazısı yerine mevcut yüksekliği koruyarak içeriği temizle
+            // listeAlani.innerHTML = "Yükleniyor..."; // Bu satırı silebilir veya değiştirebilirsiniz
+
+            try {
+                const response = await fetch('/api/sozluk/harf-detayli/' + harf);
+                const veri = await response.json();
+
+                listeAlani.innerHTML = "";
+
+                if (veri.length === 0) {
+                    listeAlani.innerHTML = "<p>Bu harfle başlayan kelime bulunamadı.</p>";
+                    return;
+                }
+
+                veri.forEach(item => {
+                    const satir = document.createElement("div");
+                    satir.className = "liste-satir";
+                    satir.innerHTML = `
+                <span class="kelime-baslik">${item.kelime}</span>
+                <span class="gizli-anlam" onclick="this.className='acik-anlam'">
+                    ${item.anlam} 
+                    <small style="display:block; font-size:0.7em; color:#999; margin-top:5px;">(Görmek için tıkla)</small>
+                </span>
+            `;
+                    listeAlani.appendChild(satir);
+                });
+
+                // İSTEĞE BAĞLI: Kullanıcıyı hafifçe sonuçların başladığı yere kaydır
+                document.getElementById("harfAlani").scrollIntoView({ behavior: 'smooth' });
+
             } catch (err) {
-                alert("Bağlantı hatası: " + err);
+                listeAlani.innerHTML = "Hata oluştu: " + err;
             }
         }
-    </script>
 
+        // Sayfa açılınca tek seferde çalıştır
+        harfleriOlustur();
+
+    </script>
 </body>
 </html>

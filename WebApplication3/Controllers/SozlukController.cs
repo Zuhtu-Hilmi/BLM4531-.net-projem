@@ -239,6 +239,39 @@ namespace WebApplication3.Controllers
             }
         }
 
+        [HttpGet("harf-detayli/{harf}")]
+        public IActionResult GetDetayliByHarf(string harf)
+        {
+            // Listeyi "dynamic" veya özel bir sınıf olarak tutabiliriz.
+            var kelimeler = new List<object>();
+
+            string? baglantiDizesi = _configuration.GetConnectionString("SozlukBaglanti");
+
+            using (SqlConnection baglanti = new SqlConnection(baglantiDizesi))
+            {
+                baglanti.Open();
+                // Hem kelimeyi hem anlamı çekiyoruz
+                string sql = "SELECT Kelime, Anlam FROM Kelimeler WHERE Kelime LIKE @harf + '%' ORDER BY Kelime";
+
+                using (SqlCommand komut = new SqlCommand(sql, baglanti))
+                {
+                    komut.Parameters.AddWithValue("@harf", harf);
+                    using (SqlDataReader okuyucu = komut.ExecuteReader())
+                    {
+                        while (okuyucu.Read())
+                        {
+                            kelimeler.Add(new
+                            {
+                                Kelime = okuyucu.GetString(0),
+                                Anlam = okuyucu.GetString(1)
+                            });
+                        }
+                    }
+                }
+            }
+            return Ok(kelimeler);
+        }
+
         // Dosyanın en altına (namespace içine) bu modeli ekleyin:
         public class OneriModel
         {
