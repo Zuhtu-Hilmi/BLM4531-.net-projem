@@ -45,7 +45,6 @@
             padding-bottom: 10px;
         }
 
-        /* Harf butonları için stil */
         .harf-butonu {
             padding: 5px 10px;
             margin: 2px;
@@ -60,79 +59,65 @@
                 color: white;
             }
 
-        /* Liste öğesi stili - GÜNCELLENDİ */
         .liste-satir {
             border-bottom: 1px solid #eee;
-            padding: 15px 10px; /* Biraz daha boşluk verdik */
+            padding: 15px 10px;
             display: flex;
-            flex-direction: row; /* YAN YANA OLMASINI SAĞLAYAN KOD */
-            justify-content: space-between; /* Biri en sola, biri en sağa yaslansın */
-            align-items: center; /* Dikey olarak ortalansın */
-            gap: 20px; /* Kelime ile anlam birbirine yapışmasın */
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
         }
 
         .kelime-baslik {
             font-weight: bold;
             font-size: 1.1em;
             color: #2c3e50;
-            margin-bottom: 0; /* Alt boşluğu sıfırladık */
-            min-width: 120px; /* Kelime alanı için minimum bir genişlik */
+            margin-bottom: 0;
+            min-width: 120px;
         }
 
-        /* GİZLİ ANLAM EFEKTİ - GÜNCELLENDİ */
         .gizli-anlam {
             background-color: #e0e0e0;
             color: transparent;
             text-shadow: 0 0 8px rgba(0,0,0,0.5);
             cursor: pointer;
-            padding: 8px 12px; /* Kutu biraz daha dolgun olsun */
+            padding: 8px 12px;
             border-radius: 4px;
             user-select: none;
             transition: all 0.3s ease;
-            flex: 1; /* Kalan boşluğun tamamını kaplasın */
-            text-align: right; /* Metin sağ tarafta dursun */
+            flex: 1;
+            text-align: right;
         }
 
-        /* TIKLANINCA GÖRÜNÜR HALİ - DÜZELTİLDİ */
         .acik-anlam {
             background-color: transparent;
             color: #555;
             text-shadow: none;
             cursor: default;
-            /* Aşağıdaki özellikler kutunun boyutunu korumasını sağlar */
-            padding: 8px 12px; /* Gizli haliyle aynı boşluk */
-            flex: 1; /* Aynı genişleme oranı */
-            text-align: right; /* Aynı hizalama */
+            padding: 8px 12px;
+            flex: 1;
+            text-align: right;
             border-radius: 4px;
-        }
-
-        /* TIKLANINCA GÖRÜNÜR HALİ */
-        .acik-anlam {
-            background-color: transparent;
-            color: #555;
-            text-shadow: none;
-            cursor: default;
         }
 
         #fihristListesi {
             margin-top: 20px;
             text-align: left;
-            min-height: 800px; /* ÖNEMLİ: Sayfanın zıplamasını engelleyen satır */
+            min-height: 800px;
         }
 
-        /* Favori Izgara Yapısı */
         .favori-grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Ekrana sığdığı kadar yan yana koy */
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 15px;
             padding: 10px 0;
         }
 
-        /* Kart Tasarımı */
         .favori-kart {
             background: #fff;
             border: 1px solid #e1e4e8;
-            border-left: 5px solid #f1c40f; /* Sol tarafa sarı çizgi */
+            border-left: 5px solid #f1c40f;
             border-radius: 8px;
             padding: 15px;
             position: relative;
@@ -141,7 +126,7 @@
         }
 
             .favori-kart:hover {
-                transform: translateY(-3px); /* Üzerine gelince yukarı kalksın */
+                transform: translateY(-3px);
                 box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             }
 
@@ -157,11 +142,10 @@
             font-size: 0.95em;
             color: #555;
             line-height: 1.4;
-            margin-bottom: 25px; /* Sil butonu için yer aç */
+            margin-bottom: 25px;
             display: block;
         }
 
-        /* Silme Butonu */
         .btn-fav-sil {
             position: absolute;
             bottom: 10px;
@@ -181,31 +165,28 @@
                 background-color: #ffcdd2;
             }
 
-        /* Arama Alanı Kapsayıcısı (Konumlandırma için gerekli) */
         .arama-wrapper {
             position: relative;
             display: inline-block;
             width: 70%;
         }
 
-        /* Öneri Kutusu (Başlangıçta gizli) */
         .oneri-kutusu {
             position: absolute;
-            top: 100%; /* Inputun tam altında başla */
+            top: 100%;
             left: 0;
             right: 0;
             background-color: #fff;
             border: 1px solid #ddd;
             border-top: none;
-            border-radius: 0 0 8px 8px; /* Alt köşeleri yuvarla */
+            border-radius: 0 0 8px 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            z-index: 1000; /* Diğer her şeyin üstünde dursun */
-            display: none; /* Varsayılan olarak gizli */
-            max-height: 250px; /* Çok uzarsa kaydırma çubuğu çıksın */
+            z-index: 1000;
+            display: none;
+            max-height: 250px;
             overflow-y: auto;
         }
 
-        /* Öneri Satırları */
         .oneri-satir {
             padding: 12px 15px;
             cursor: pointer;
@@ -220,15 +201,65 @@
             }
 
             .oneri-satir:hover {
-                background-color: #f0f8ff; /* Üzerine gelince açık mavi olsun */
+                background-color: #f0f8ff;
                 color: #007bff;
                 font-weight: 500;
             }
 
-        /* Eşleşen kısmın kalın olması için (Opsiyonel ama şık durur) */
         .kalin-yazi {
             font-weight: bold;
             color: #000;
+        }
+
+        /* Günün Kelimesi Kutusu */
+        .gunun-kelimesi-kutu {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+            .gunun-kelimesi-kutu h3 {
+                margin-top: 0;
+                font-size: 1.1em;
+                opacity: 0.9;
+            }
+
+            .gunun-kelimesi-kutu .kelime {
+                font-size: 2em;
+                font-weight: bold;
+                margin: 10px 0;
+            }
+
+            .gunun-kelimesi-kutu .anlam {
+                font-size: 1.1em;
+                line-height: 1.5;
+                opacity: 0.95;
+            }
+
+        /* Örnek Cümle Alanı */
+        .ornek-cumle-alani {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+
+        .ornek-cumle-item {
+            background-color: white;
+            padding: 12px;
+            border-left: 3px solid #007bff;
+            margin: 10px 0;
+            border-radius: 3px;
+        }
+
+        .ornek-cumle-form {
+            margin-top: 10px;
+            padding: 15px;
+            background-color: #e3f2fd;
+            border-radius: 5px;
         }
     </style>
 </head>
@@ -269,13 +300,19 @@
         </div>
     </div>
 
+    <!-- Günün Kelimesi -->
+    <div id="gununKelimesiKutusu" class="gunun-kelimesi-kutu" style="display:none;">
+        <h3>⭐ Günün Kelimesi</h3>
+        <div class="kelime" id="gununKelimesiBaslik"></div>
+        <div class="anlam" id="gununKelimesiAnlam"></div>
+    </div>
+
     <h2>Basit Sözlük</h2>
 
     <p>Aradığınız kelimenin anlamını, dikkat dağıtıcı hiçbir unsur olmadan anında öğrenin.</p>
 
     <div class="arama-wrapper">
         <input type="text" id="txtKelime" placeholder="Kelime girin..." autocomplete="off" style="width: 100%; box-sizing: border-box;" />
-
         <div id="ozelOneriKutusu" class="oneri-kutusu"></div>
     </div>
 
@@ -285,6 +322,24 @@
 
     <div id="sonucAlani">
         ...
+    </div>
+
+    <!-- Örnek Cümleler Alanı -->
+    <div id="ornekCumlelerAlani" class="ornek-cumle-alani" style="display:none;">
+        <h4>📝 Örnek Cümleler</h4>
+        <div id="ornekCumlelerListesi"></div>
+
+        <div id="ornekCumleFormAlani" style="display:none;">
+            <button onclick="ornekCumleFormuAc()" style="background-color: #007bff; color: white; padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer;">+ Örnek Cümle Ekle</button>
+
+            <div id="ornekCumleFormu" class="ornek-cumle-form" style="display:none;">
+                <h4>Örnek Cümlenizi Ekleyin</h4>
+                <p style="font-size: 0.9em; color: #666;">Cümleniz anonim olarak gönderilecek ve onaydan sonra yayınlanacaktır.</p>
+                <textarea id="txtOrnekCumle" placeholder="Örnek cümlenizi buraya yazın..." style="width: 100%; height: 80px; padding: 10px;"></textarea>
+                <button onclick="ornekCumleGonder()" style="background-color: #28a745; color: white; padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer;">Gönder</button>
+                <button onclick="ornekCumleFormuKapat()" style="background-color: #6c757d; color: white; padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer;">İptal</button>
+            </div>
+        </div>
     </div>
 
     <button id="btnFavori" style="display:none; margin-top:15px; width:100%; padding:10px; background:#ffc107; border:none; border-radius:5px; cursor:pointer;">
@@ -313,7 +368,6 @@
         const panelGirisYok = document.getElementById("panelGirisYok");
         const panelKullanici = document.getElementById("panelKullanici");
 
-        // Kullanıcı giriş yapmış mı kontrol et
         const kullaniciId = localStorage.getItem("sozluk_uid");
         if (kullaniciId) {
             panelGirisYok.style.display = "none";
@@ -322,7 +376,7 @@
 
         araButonu.addEventListener("click", aramaYap);
         kelimeKutusu.addEventListener("keypress", function (e) { if (e.key === "Enter") aramaYap(); });
-        // Arama inputu dinleyicisi (GÜNCELLENMİŞ)
+
         kelimeKutusu.addEventListener("input", async function () {
             const sorgu = this.value;
             const kutu = document.getElementById("ozelOneriKutusu");
@@ -336,45 +390,37 @@
             if (response.ok) {
                 const kelimeler = await response.json();
 
-                kutu.innerHTML = ""; // İçini temizle
+                kutu.innerHTML = "";
 
                 if (kelimeler.length > 0) {
-                    kutu.style.display = "block"; // Kutuyu göster
+                    kutu.style.display = "block";
 
                     kelimeler.forEach(k => {
                         const satir = document.createElement("div");
                         satir.className = "oneri-satir";
-
-                        // Kelimeyi yaz (Aranan kısmı kalın yapabiliriz basitçe)
                         satir.innerText = k;
-
-                        // Tıklama olayı
                         satir.onclick = function () {
-                            kelimeKutusu.value = k; // Inputa yaz
-                            kutu.style.display = "none"; // Kutuyu gizle
-                            aramaYap(); // Otomatik aramayı başlat
+                            kelimeKutusu.value = k;
+                            kutu.style.display = "none";
+                            aramaYap();
                         };
-
                         kutu.appendChild(satir);
                     });
                 } else {
-                    kutu.style.display = "none"; // Sonuç yoksa gizle
+                    kutu.style.display = "none";
                 }
             }
         });
 
-        // Ekranda boş bir yere tıklayınca öneri kutusunu kapatma
         document.addEventListener("click", function (e) {
             const kutu = document.getElementById("ozelOneriKutusu");
             const input = document.getElementById("txtKelime");
 
-            // Eğer tıklanan yer kutu veya input değilse kapat
             if (e.target !== kutu && e.target !== input) {
                 kutu.style.display = "none";
             }
         });
 
-        // Global değişkenler
         let sonArananKelime = "";
         let sonBulunanAnlam = "";
 
@@ -385,6 +431,7 @@
             sonucAlani.innerText = "Aranıyor...";
             btnFavori.style.display = "none";
             document.getElementById("favoriListesiAlani").style.display = "none";
+            document.getElementById("ornekCumlelerAlani").style.display = "none";
 
             try {
                 const response = await fetch('/api/sozluk/' + kelime);
@@ -398,6 +445,9 @@
                     if (kullaniciId) {
                         btnFavori.style.display = "block";
                     }
+
+                    // Örnek cümleleri getir
+                    await ornekCumleleriGetir(kelime);
                 } else {
                     sonucAlani.style.color = "#b22222";
                     sonucAlani.innerText = "Kelime bulunamadı.";
@@ -407,7 +457,98 @@
             }
         }
 
-        // Favori İşlemleri
+        // Örnek Cümleler
+        async function ornekCumleleriGetir(kelime) {
+            const alan = document.getElementById("ornekCumlelerAlani");
+            const liste = document.getElementById("ornekCumlelerListesi");
+            const formAlani = document.getElementById("ornekCumleFormAlani");
+
+            try {
+                const response = await fetch('/api/sozluk/ornek-cumleler/' + kelime);
+                const cumleler = await response.json();
+
+                liste.innerHTML = "";
+
+                if (cumleler.length > 0) {
+                    cumleler.forEach(c => {
+                        const div = document.createElement("div");
+                        div.className = "ornek-cumle-item";
+                        div.innerHTML = `"${c.cumle}"`;
+                        liste.appendChild(div);
+                    });
+                } else {
+                    liste.innerHTML = "<p style='color:#999;'>Henüz örnek cümle eklenmemiş.</p>";
+                }
+
+                alan.style.display = "block";
+
+                if (kullaniciId) {
+                    formAlani.style.display = "block";
+                }
+
+            } catch (err) {
+                console.error("Örnek cümleler getirilemedi:", err);
+            }
+        }
+
+        function ornekCumleFormuAc() {
+            document.getElementById("ornekCumleFormu").style.display = "block";
+        }
+
+        function ornekCumleFormuKapat() {
+            document.getElementById("ornekCumleFormu").style.display = "none";
+            document.getElementById("txtOrnekCumle").value = "";
+        }
+
+        async function ornekCumleGonder() {
+            const cumle = document.getElementById("txtOrnekCumle").value.trim();
+            if (!cumle) {
+                alert("Lütfen bir cümle yazın.");
+                return;
+            }
+
+            const veri = {
+                Kelime: sonArananKelime,
+                KullaniciId: parseInt(kullaniciId),
+                Cumle: cumle
+            };
+
+            try {
+                const response = await fetch('/api/sozluk/ornek-cumle', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(veri)
+                });
+
+                if (response.ok) {
+                    alert(await response.text());
+                    ornekCumleFormuKapat();
+                } else {
+                    alert("Hata: " + await response.text());
+                }
+            } catch (err) {
+                alert("Bağlantı hatası: " + err);
+            }
+        }
+
+        // Günün Kelimesi
+        async function gununKelimesiniGetir() {
+            try {
+                const response = await fetch('/api/sozluk/gunun-kelimesi');
+                if (response.ok) {
+                    const veri = await response.json();
+                    document.getElementById("gununKelimesiKutusu").style.display = "block";
+                    document.getElementById("gununKelimesiBaslik").innerText = veri.kelime;
+                    document.getElementById("gununKelimesiAnlam").innerText = veri.anlam;
+                }
+            } catch (err) {
+                console.log("Günün kelimesi yok.");
+            }
+        }
+
+        // Sayfa yüklenince günün kelimesini getir
+        gununKelimesiniGetir();
+
         btnFavori.addEventListener("click", async function () {
             if (!kullaniciId) return;
 
@@ -430,16 +571,12 @@
         async function favorileriGoster() {
             const divAlani = document.getElementById("favoriListesiAlani");
 
-            // --- YENİ EKLENEN KISIM: AÇ/KAPA KONTROLÜ ---
             if (divAlani.style.display === "block") {
                 divAlani.style.display = "none";
-                return; // Fonksiyondan çık (Veri çekmeye gerek yok)
+                return;
             }
-            // --------------------------------------------
 
             const gridContainer = document.getElementById("favoriGrid");
-
-            // Alanı görünür yap
             divAlani.style.display = "block";
             gridContainer.innerHTML = "<p style='width:100%; text-align:center;'>Yükleniyor...</p>";
 
@@ -456,10 +593,10 @@
 
                 if (veriler.length === 0) {
                     gridContainer.innerHTML = `
-                        <div style="grid-column: 1 / -1; text-align: center; color: #777; padding: 20px;">
-                            Henüz hiç favori kelimeniz yok. <br>
-                            <small>Beğendiğiniz kelimeleri aratıp "Favorilere Ekle" diyebilirsiniz.</small>
-                        </div>`;
+                            <div style="grid-column: 1 / -1; text-align: center; color: #777; padding: 20px;">
+                                Henüz hiç favori kelimeniz yok. <br>
+                                <small>Beğendiğiniz kelimeleri aratıp "Favorilere Ekle" diyebilirsiniz.</small>
+                            </div>`;
                     return;
                 }
 
@@ -467,10 +604,10 @@
                     const kart = document.createElement("div");
                     kart.className = "favori-kart";
                     kart.innerHTML = `
-                        <span class="fav-kelime">${fav.kelime}</span>
-                        <span class="fav-anlam">${fav.anlam}</span>
-                        <button onclick="favoriSil(${fav.id})" class="btn-fav-sil">🗑️ Sil</button>
-                    `;
+                            <span class="fav-kelime">${fav.kelime}</span>
+                            <span class="fav-anlam">${fav.anlam}</span>
+                            <button onclick="favoriSil(${fav.id})" class="btn-fav-sil">🗑️ Sil</button>
+                        `;
                     gridContainer.appendChild(kart);
                 });
 
@@ -488,7 +625,6 @@
             }
         }
 
-        // Hesap Silme
         async function hesapSil() {
             if (!confirm("DİKKAT! Hesabınız ve tüm favorileriniz kalıcı olarak silinecek. Emin misiniz?")) return;
             if (!kullaniciId) return;
@@ -513,10 +649,9 @@
             window.location.reload();
         }
 
-        // Şifre ve Öneri Formu Kontrolleri
         function formuGosterGizle() {
             const form = document.getElementById("sifreDegistirmeFormu");
-            document.getElementById("oneriFormu").style.display = "none"; // Diğerini kapat
+            document.getElementById("oneriFormu").style.display = "none";
             if (form.style.display === "none") {
                 form.style.display = "block";
             } else {
@@ -528,7 +663,7 @@
 
         function oneriFormuGoster() {
             const form = document.getElementById("oneriFormu");
-            document.getElementById("sifreDegistirmeFormu").style.display = "none"; // Diğerini kapat
+            document.getElementById("sifreDegistirmeFormu").style.display = "none";
             if (form.style.display === "none") {
                 form.style.display = "block";
             } else {
@@ -587,8 +722,6 @@
             } catch (err) { alert("Bağlantı hatası: " + err); }
         }
 
-
-        // TEK VE TEMİZ ALFABE FONKSİYONU (Güncellenmiş)
         function harfleriOlustur() {
             const alfabe = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
             const container = document.getElementById("harfButonlari");
@@ -597,13 +730,10 @@
                 const btn = document.createElement("button");
                 btn.innerText = harf;
                 btn.className = "harf-butonu";
-                // type="button" ekleyerek form davranışı varsa engelleriz
                 btn.type = "button";
 
                 btn.onclick = (e) => {
-                    // 1. Zıplamayı engelle
                     e.preventDefault();
-                    // 2. Verileri getir
                     kelimeleriGetir(harf);
                 };
                 container.appendChild(btn);
@@ -612,9 +742,6 @@
 
         async function kelimeleriGetir(harf) {
             const listeAlani = document.getElementById("fihristListesi");
-
-            // Yükleniyor yazısı yerine mevcut yüksekliği koruyarak içeriği temizle
-            // listeAlani.innerHTML = "Yükleniyor..."; // Bu satırı silebilir veya değiştirebilirsiniz
 
             try {
                 const response = await fetch('/api/sozluk/harf-detayli/' + harf);
@@ -631,17 +758,15 @@
                     const satir = document.createElement("div");
                     satir.className = "liste-satir";
 
-                    // HTML Yapısı: "Görmek için tıkla" yazısını kaldırdık, daha sade oldu.
                     satir.innerHTML = `
-                        <span class="kelime-baslik">${item.kelime}</span>
-                        <span class="gizli-anlam" title="Görmek için tıkla" onclick="this.className='acik-anlam'">
-                            ${item.anlam}
-                        </span>
-                    `;
+                            <span class="kelime-baslik">${item.kelime}</span>
+                            <span class="gizli-anlam" title="Görmek için tıkla" onclick="this.className='acik-anlam'">
+                                ${item.anlam}
+                            </span>
+                        `;
                     listeAlani.appendChild(satir);
                 });
 
-                // İSTEĞE BAĞLI: Kullanıcıyı hafifçe sonuçların başladığı yere kaydır
                 document.getElementById("harfAlani").scrollIntoView({ behavior: 'smooth' });
 
             } catch (err) {
@@ -649,7 +774,6 @@
             }
         }
 
-        // Sayfa açılınca tek seferde çalıştır
         harfleriOlustur();
 
     </script>

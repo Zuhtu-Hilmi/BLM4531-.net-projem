@@ -5,48 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Paneli - Sözlük Yönetimi</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: sans-serif;
-            /* Flex yapısını koruyalım ama dikey hizalamayı kaldıralım */
-            display: flex;
-            justify-content: center;
-            /* align-items: center;  <-- Bunu siliyoruz */
-            /* Yükseklik sınırını kaldırıp minimum yükseklik verelim */
-            min-height: 100vh;
-            /* Üstten ve alttan boşluk bırakalım ki yapışmasın */
-            padding: 40px 0;
             background-color: #2c3e50;
-            margin: 0; /* Tarayıcı varsayılan boşluğunu sıfırla */
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
         }
 
         .panel {
             background: white;
             padding: 30px;
             border-radius: 10px;
-            width: 400px;
+            margin-bottom: 20px;
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
 
-        h2 {
-            text-align: center;
+        h2, h3 {
             color: #333;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
         }
 
-        input, textarea {
+        input, textarea, select {
             width: 100%;
             padding: 10px;
             margin: 10px 0;
-            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 5px;
         }
 
         button {
-            width: 100%;
-            padding: 10px;
+            padding: 10px 20px;
             border: none;
             cursor: pointer;
             color: white;
             font-weight: bold;
-            margin-bottom: 20px;
+            margin: 5px;
+            border-radius: 5px;
         }
 
         .btn-ekle {
@@ -59,64 +63,273 @@
 
         .btn-cikis {
             background-color: #c0392b;
-            margin-top: 20px;
+        }
+
+        .btn-onayla {
+            background-color: #27ae60;
+            font-size: 0.8em;
+            padding: 5px 10px;
+        }
+
+        .btn-reddet {
+            background-color: #c0392b;
+            font-size: 0.8em;
+            padding: 5px 10px;
+        }
+
+        .btn-gunun-kelimesi {
+            background-color: #9b59b6;
+        }
+
+        .btn-ara {
+            background-color: #3498db;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+            table th {
+                background-color: #ecf0f1;
+                padding: 12px;
+                text-align: left;
+                font-weight: bold;
+            }
+
+            table td {
+                padding: 10px;
+                border-bottom: 1px solid #eee;
+            }
+
+            table tr:hover {
+                background-color: #f8f9fa;
+            }
+
+        .tab-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background-color: #34495e;
+            padding: 12px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+            .tab-btn:hover {
+                background-color: #2c3e50;
+            }
+
+            .tab-btn.active {
+                background-color: #3498db;
+            }
+
+        .tab-content {
+            display: none;
+        }
+
+            .tab-content.active {
+                display: block;
+            }
+
+        .harf-butonlari {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+            margin: 10px 0;
+        }
+
+        .harf-btn {
+            padding: 8px 12px;
+            background-color: #ecf0f1;
+            color: #333;
+            border: 1px solid #bdc3c7;
+            cursor: pointer;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+
+            .harf-btn:hover {
+                background-color: #3498db;
+                color: white;
+            }
+
+        .mini-box {
+            display: inline-block;
+            width: 48%;
+            vertical-align: top;
+            margin-right: 2%;
+        }
+
+        @media (max-width: 768px) {
+            .mini-box {
+                width: 100%;
+                margin-right: 0;
+            }
         }
 
         hr {
-            margin: 20px 0;
+            margin: 25px 0;
             border: 0;
             border-top: 1px solid #eee;
         }
     </style>
 </head>
 <body>
-
-    <div class="panel">
-        <h2>Yönetici Paneli</h2>
-
-        <h3>Yeni Kelime Ekle</h3>
-        <input type="text" id="yeniKelime" placeholder="Kelime (Örn: Server)">
-        <textarea id="yeniAnlam" placeholder="Anlamı..."></textarea>
-        <button class="btn-ekle" onclick="kelimeEkle()">Kelimeyi Kaydet</button>
-
-        <hr>
-
-        <h3>Anlam Güncelle</h3>
-        <input type="text" id="guncelKelime" placeholder="Hangi Kelime? (Örn: Server)">
-        <button onclick="kelimeGetir()" style="width: 80px; background-color: #3498db; margin: 10px 0;">Getir</button>
-        <textarea id="guncelAnlam" placeholder="Yeni Anlamı..."></textarea>
-        <button class="btn-guncelle" onclick="kelimeGuncelle()">Anlamı Değiştir</button>
-
-        <button class="btn-cikis" onclick="cikisYap()">Çıkış Yap</button>
-
-        <hr>
-
-        <h3>📩 Kullanıcılardan Gelen Öneriler</h3>
-        <div id="oneriTablosuAlani">
-            <table border="1" style="width:100%; border-collapse: collapse; text-align: left;">
-                <thead>
-                    <tr style="background-color: #ecf0f1;">
-                        <th style="padding:8px;">Gönderen</th>
-                        <th style="padding:8px;">Kelime</th>
-                        <th style="padding:8px;">Anlam</th>
-                        <th style="padding:8px;">İşlem</th>
-                    </tr>
-                </thead>
-                <tbody id="oneriListesiGovdesi">
-                </tbody>
-            </table>
-            <p id="oneriBilgi" style="color:#777; font-size:0.9em; margin-top:10px;">Yükleniyor...</p>
+    <div class="container">
+        <div class="panel">
+            <h2>🛠️ Yönetici Paneli</h2>
+            <button class="btn-cikis" onclick="cikisYap()">Çıkış Yap</button>
         </div>
 
-        <br><br>
+        <!-- TAB MENÜ -->
+        <div class="panel">
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="tabAc('kelimeIslemleri')">📝 Kelime İşlemleri</button>
+                <button class="tab-btn" onclick="tabAc('oneriler')">📩 Öneriler</button>
+                <button class="tab-btn" onclick="tabAc('ornekCumleler')">💬 Örnek Cümleler</button>
+                <button class="tab-btn" onclick="tabAc('kelimeListesi')">📚 Tüm Kelimeler</button>
+                <button class="tab-btn" onclick="tabAc('arsiv')">📦 Arşiv</button>
+                <button class="tab-btn" onclick="tabAc('gununKelimesi')">⭐ Günün Kelimesi</button>
+            </div>
+
+            <!-- KELIME İŞLEMLERİ TAB -->
+            <div id="kelimeIslemleri" class="tab-content active">
+                <div class="mini-box">
+                    <h3>Yeni Kelime Ekle</h3>
+                    <input type="text" id="yeniKelime" placeholder="Kelime (Örn: Server)">
+                    <textarea id="yeniAnlam" placeholder="Anlamı..."></textarea>
+                    <button class="btn-ekle" onclick="kelimeEkle()">Kelimeyi Kaydet</button>
+                </div>
+
+                <div class="mini-box">
+                    <h3>Anlam Güncelle</h3>
+                    <input type="text" id="guncelKelime" placeholder="Hangi Kelime?">
+                    <button class="btn-ara" onclick="kelimeGetir()">Getir</button>
+                    <textarea id="guncelAnlam" placeholder="Yeni Anlamı..."></textarea>
+                    <button class="btn-guncelle" onclick="kelimeGuncelle()">Anlamı Değiştir</button>
+                </div>
+            </div>
+
+            <!-- ÖNERİLER TAB -->
+            <div id="oneriler" class="tab-content">
+                <h3>📩 Kullanıcılardan Gelen Öneriler</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Gönderen</th>
+                            <th>Kelime</th>
+                            <th>Anlam</th>
+                            <th>İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="oneriListesiGovdesi"></tbody>
+                </table>
+                <p id="oneriBilgi" style="color:#777; font-size:0.9em; margin-top:10px;">Yükleniyor...</p>
+            </div>
+
+            <!-- ÖRNEK CÜMLELER TAB -->
+            <div id="ornekCumleler" class="tab-content">
+                <h3>💬 Bekleyen Örnek Cümleler</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Kelime</th>
+                            <th>Gönderen</th>
+                            <th>Cümle</th>
+                            <th>İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ornekCumleListesi"></tbody>
+                </table>
+                <p id="ornekCumleBilgi" style="color:#777;">Yükleniyor...</p>
+            </div>
+
+            <!-- TÜM KELİMELER TAB -->
+            <div id="kelimeListesi" class="tab-content">
+                <h3>📚 Tüm Kelimeler</h3>
+                <div>
+                    <button class="btn-ara" onclick="tumKelimeleriGetir()">Tümünü Göster</button>
+                    <span style="margin: 0 10px;">veya</span>
+                    <button class="btn-ara" onclick="harfButonlariniGoster()">Harfe Göre Filtrele</button>
+                </div>
+                <div id="harfFiltresi" class="harf-butonlari" style="display:none;"></div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Kelime</th>
+                            <th>Anlam</th>
+                        </tr>
+                    </thead>
+                    <tbody id="kelimeListesiGovdesi"></tbody>
+                </table>
+                <p id="kelimeListeBilgi" style="color:#777;">Listelemek için yukarıdaki butonları kullanın.</p>
+            </div>
+
+            <!-- ARŞİV TAB -->
+            <div id="arsiv" class="tab-content">
+                <h3>📦 Kelime İşlem Arşivi</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tarih</th>
+                            <th>Kelime</th>
+                            <th>İşlem</th>
+                            <th>Eski Anlam</th>
+                            <th>Yeni Anlam</th>
+                        </tr>
+                    </thead>
+                    <tbody id="arsivListesi"></tbody>
+                </table>
+                <p id="arsivBilgi" style="color:#777;">Yükleniyor...</p>
+            </div>
+
+            <!-- GÜNÜN KELİMESİ TAB -->
+            <div id="gununKelimesi" class="tab-content">
+                <div class="mini-box">
+                    <h3>⭐ Günün Kelimesini Ayarla</h3>
+                    <input type="text" id="gununKelimesiInput" placeholder="Kelime">
+                    <textarea id="gununKelimesiAnlam" placeholder="Anlamı"></textarea>
+                    <button class="btn-gunun-kelimesi" onclick="gununKelimesiAyarla()">Kaydet</button>
+                </div>
+
+                <div class="mini-box">
+                    <h3>📅 Günün Kelimesi Arşivi</h3>
+                    <button class="btn-ara" onclick="gununKelimesiArsivGetir()">Arşivi Göster</button>
+                    <div id="gununKelimesiArsivAlani" style="margin-top:15px;"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <script>// KELİME EKLEME FONKSİYONU
+    <script>
+        // TAB SİSTEMİ
+        function tabAc(tabId) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+
+            // İlgili veriyi yükle
+            if (tabId === 'oneriler') onerileriGetir();
+            if (tabId === 'ornekCumleler') ornekCumleleriGetir();
+            if (tabId === 'arsiv') arsiviGetir();
+        }
+
+        // KELİME EKLEME
         async function kelimeEkle() {
             const kelime = document.getElementById("yeniKelime").value;
             const anlam = document.getElementById("yeniAnlam").value;
 
-            const response = await fetch('/api/sozluk', { // PostKelime Endpointi
+            const response = await fetch('/api/sozluk', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ kelime: kelime, anlam: anlam })
@@ -127,16 +340,16 @@
                 document.getElementById("yeniKelime").value = "";
                 document.getElementById("yeniAnlam").value = "";
             } else {
-                alert("Hata: Kelime zaten var olabilir.");
+                alert("Hata: " + await response.text());
             }
         }
 
-        // KELİME GÜNCELLEME FONKSİYONU
+        // KELİME GÜNCELLEME
         async function kelimeGuncelle() {
             const kelime = document.getElementById("guncelKelime").value;
             const anlam = document.getElementById("guncelAnlam").value;
 
-            const response = await fetch('/api/sozluk/guncelle', { // Yeni Yazdığımız Endpoint
+            const response = await fetch('/api/sozluk/guncelle', {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ kelime: kelime, anlam: anlam })
@@ -145,13 +358,8 @@
             if (response.ok) {
                 alert("Anlam güncellendi!");
             } else {
-                alert("Hata: Kelime bulunamadı.");
+                alert("Hata: " + await response.text());
             }
-        }
-
-        function cikisYap() {
-            localStorage.clear();
-            window.location.href = "giris.html";
         }
 
         async function kelimeGetir() {
@@ -163,16 +371,12 @@
                 const anlam = await response.text();
                 document.getElementById("guncelAnlam").value = anlam;
             } else {
-                alert("Kelime bulunamadı, önce eklemelisiniz.");
+                alert("Kelime bulunamadı.");
                 document.getElementById("guncelAnlam").value = "";
             }
         }
 
-        // Sayfa açılınca önerileri çek
-        document.addEventListener("DOMContentLoaded", function () {
-            onerileriGetir();
-        });
-
+        // ÖNERİLER
         async function onerileriGetir() {
             const tabloGovdesi = document.getElementById("oneriListesiGovdesi");
             const bilgi = document.getElementById("oneriBilgi");
@@ -189,20 +393,19 @@
                     return;
                 }
 
-                bilgi.style.display = "none"; // Bilgi yazısını gizle
+                bilgi.style.display = "none";
 
                 veriler.forEach(veri => {
                     const satir = document.createElement("tr");
-
                     satir.innerHTML = `
-                <td style="padding:8px;"><b>${veri.gonderen}</b></td>
-                <td style="padding:8px; color:#2980b9;">${veri.kelime}</td>
-                <td style="padding:8px;">${veri.anlam}</td>
-                <td style="padding:8px;">
-                    <button onclick="oneriOnayla(${veri.id}, '${veri.kelime}', '${veri.anlam}')" style="background:#27ae60; padding:5px; width:auto; font-size:0.8em; margin-bottom:5px;">Onayla</button>
-                    <button onclick="oneriReddet(${veri.id})" style="background:#c0392b; padding:5px; width:auto; font-size:0.8em;">Reddet</button>
-                </td>
-            `;
+                            <td><b>${veri.gonderen}</b></td>
+                            <td style="color:#2980b9;">${veri.kelime}</td>
+                            <td>${veri.anlam}</td>
+                            <td>
+                                <button class="btn-onayla" onclick="oneriOnayla(${veri.id})">✓ Onayla</button>
+                                <button class="btn-reddet" onclick="oneriReddet(${veri.id})">✗ Reddet</button>
+                            </td>
+                        `;
                     tabloGovdesi.appendChild(satir);
                 });
 
@@ -211,23 +414,258 @@
             }
         }
 
-        // Şimdilik sadece alert veren fonksiyonlar (Backend'i sonra yazılabilir)
-        async function oneriOnayla(id, kelime, anlam) {
-            if (confirm(kelime + " kelimesi sözlüğe eklensin mi?")) {
-                // Buraya onaylama API isteği gelecek
-                // 1. Kelimeler tablosuna ekle
-                // 2. KelimeOnerileri tablosunda durumunu 'Onaylandi' yap
-                alert("Bu özellik henüz backend'e bağlanmadı, ama arayüz hazır!");
+        async function oneriOnayla(id) {
+            if (!confirm("Bu öneriyi onaylayıp sözlüğe eklemek istiyor musunuz?")) return;
+
+            try {
+                const response = await fetch('/api/admin/oneri/onayla/' + id, { method: 'POST' });
+                if (response.ok) {
+                    alert(await response.text());
+                    onerileriGetir();
+                } else {
+                    alert("Hata: " + await response.text());
+                }
+            } catch (err) {
+                alert("Bağlantı hatası: " + err);
             }
         }
 
         async function oneriReddet(id) {
-            if (confirm("Bu öneriyi reddetmek istiyor musunuz?")) {
-                // Buraya reddetme API isteği gelecek
-                alert("Silme işlemi backend kodu yazılınca çalışacak.");
+            if (!confirm("Bu öneriyi reddetmek istiyor musunuz?")) return;
+
+            try {
+                const response = await fetch('/api/admin/oneri/reddet/' + id, { method: 'DELETE' });
+                if (response.ok) {
+                    alert(await response.text());
+                    onerileriGetir();
+                } else {
+                    alert("Hata: " + await response.text());
+                }
+            } catch (err) {
+                alert("Bağlantı hatası: " + err);
             }
         }
 
+        // ÖRNEK CÜMLELER
+        async function ornekCumleleriGetir() {
+            const liste = document.getElementById("ornekCumleListesi");
+            const bilgi = document.getElementById("ornekCumleBilgi");
+
+            liste.innerHTML = "";
+            bilgi.innerText = "Yükleniyor...";
+
+            try {
+                const response = await fetch('/api/admin/ornek-cumleler/bekleyen');
+                const veriler = await response.json();
+
+                if (veriler.length === 0) {
+                    bilgi.innerText = "Bekleyen örnek cümle yok.";
+                    return;
+                }
+
+                bilgi.style.display = "none";
+
+                veriler.forEach(veri => {
+                    const satir = document.createElement("tr");
+                    satir.innerHTML = `
+                            <td><b>${veri.kelime}</b></td>
+                            <td>${veri.gonderen}</td>
+                            <td>${veri.cumle}</td>
+                            <td>
+                                <button class="btn-onayla" onclick="ornekCumleOnayla(${veri.id})">✓ Onayla</button>
+                                <button class="btn-reddet" onclick="ornekCumleReddet(${veri.id})">✗ Reddet</button>
+                            </td>
+                        `;
+                    liste.appendChild(satir);
+                });
+            } catch (err) {
+                bilgi.innerText = "Hata: " + err;
+            }
+        }
+
+        async function ornekCumleOnayla(id) {
+            try {
+                const response = await fetch('/api/admin/ornek-cumle/onayla/' + id, { method: 'POST' });
+                if (response.ok) {
+                    alert("Örnek cümle onaylandı.");
+                    ornekCumleleriGetir();
+                } else {
+                    alert("Hata: " + await response.text());
+                }
+            } catch (err) {
+                alert("Bağlantı hatası: " + err);
+            }
+        }
+
+        async function ornekCumleReddet(id) {
+            try {
+                const response = await fetch('/api/admin/ornek-cumle/reddet/' + id, { method: 'DELETE' });
+                if (response.ok) {
+                    alert("Örnek cümle reddedildi.");
+                    ornekCumleleriGetir();
+                } else {
+                    alert("Hata: " + await response.text());
+                }
+            } catch (err) {
+                alert("Bağlantı hatası: " + err);
+            }
+        }
+
+        // TÜM KELİMELER
+        async function tumKelimeleriGetir(harf = null) {
+            const liste = document.getElementById("kelimeListesiGovdesi");
+            const bilgi = document.getElementById("kelimeListeBilgi");
+
+            liste.innerHTML = "";
+            bilgi.innerText = "Yükleniyor...";
+
+            try {
+                let url = '/api/admin/kelimeler';
+                if (harf) url += '?harf=' + harf;
+
+                const response = await fetch(url);
+                const veriler = await response.json();
+
+                if (veriler.length === 0) {
+                    bilgi.innerText = "Kelime bulunamadı.";
+                    return;
+                }
+
+                bilgi.innerText = `Toplam ${veriler.length} kelime listeleniyor.`;
+
+                veriler.forEach(veri => {
+                    const satir = document.createElement("tr");
+                    satir.innerHTML = `
+                            <td>${veri.id}</td>
+                            <td><b>${veri.kelime}</b></td>
+                            <td>${veri.anlam.substring(0, 100)}${veri.anlam.length > 100 ? '...' : ''}</td>
+                        `;
+                    liste.appendChild(satir);
+                });
+            } catch (err) {
+                bilgi.innerText = "Hata: " + err;
+            }
+        }
+
+        function harfButonlariniGoster() {
+            const alan = document.getElementById("harfFiltresi");
+            if (alan.style.display === "none" || alan.innerHTML === "") {
+                alan.style.display = "flex";
+                alan.innerHTML = "";
+
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("").forEach(harf => {
+                    const btn = document.createElement("button");
+                    btn.className = "harf-btn";
+                    btn.innerText = harf;
+                    btn.onclick = () => tumKelimeleriGetir(harf);
+                    alan.appendChild(btn);
+                });
+            } else {
+                alan.style.display = "none";
+            }
+        }
+
+        // ARŞİV
+        async function arsiviGetir() {
+            const liste = document.getElementById("arsivListesi");
+            const bilgi = document.getElementById("arsivBilgi");
+
+            liste.innerHTML = "";
+            bilgi.innerText = "Yükleniyor...";
+
+            try {
+                const response = await fetch('/api/admin/arsiv');
+                const veriler = await response.json();
+
+                if (veriler.length === 0) {
+                    bilgi.innerText = "Arşiv boş.";
+                    return;
+                }
+
+                bilgi.style.display = "none";
+
+                veriler.forEach(veri => {
+                    const satir = document.createElement("tr");
+                    satir.innerHTML = `
+                            <td>${veri.tarih}</td>
+                            <td><b>${veri.kelime}</b></td>
+                            <td><span style="background:#e67e22;color:white;padding:2px 8px;border-radius:3px;">${veri.islem}</span></td>
+                            <td>${veri.eskiAnlam || '-'}</td>
+                            <td>${veri.yeniAnlam}</td>
+                        `;
+                    liste.appendChild(satir);
+                });
+            } catch (err) {
+                bilgi.innerText = "Hata: " + err;
+            }
+        }
+
+        // GÜNÜN KELİMESİ
+        async function gununKelimesiAyarla() {
+            const kelime = document.getElementById("gununKelimesiInput").value;
+            const anlam = document.getElementById("gununKelimesiAnlam").value;
+
+            if (!kelime || !anlam) {
+                alert("Lütfen kelime ve anlamını girin.");
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/admin/gunun-kelimesi', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ Kelime: kelime, Anlam: anlam })
+                });
+
+                if (response.ok) {
+                    alert(await response.text());
+                    document.getElementById("gununKelimesiInput").value = "";
+                    document.getElementById("gununKelimesiAnlam").value = "";
+                } else {
+                    alert("Hata: " + await response.text());
+                }
+            } catch (err) {
+                alert("Bağlantı hatası: " + err);
+            }
+        }
+
+        async function gununKelimesiArsivGetir() {
+            const alan = document.getElementById("gununKelimesiArsivAlani");
+            alan.innerHTML = "Yükleniyor...";
+
+            try {
+                const response = await fetch('/api/sozluk/gunun-kelimesi/arsiv');
+                const veriler = await response.json();
+
+                if (veriler.length === 0) {
+                    alan.innerHTML = "Henüz günün kelimesi arşivi yok.";
+                    return;
+                }
+
+                alan.innerHTML = "";
+                veriler.forEach(veri => {
+                    const div = document.createElement("div");
+                    div.style.cssText = "border:1px solid #eee; padding:10px; margin:10px 0; border-radius:5px;";
+                    div.innerHTML = `
+                            <strong style="color:#9b59b6;">${veri.tarih}</strong><br>
+                            <strong>${veri.kelime}</strong>: ${veri.anlam}
+                        `;
+                    alan.appendChild(div);
+                });
+            } catch (err) {
+                alan.innerHTML = "Hata: " + err;
+            }
+        }
+
+        function cikisYap() {
+            localStorage.clear();
+            window.location.href = "giris.html";
+        }
+
+        // Sayfa yüklendiğinde önerileri getir
+        document.addEventListener("DOMContentLoaded", function () {
+            onerileriGetir();
+        });
     </script>
 </body>
 </html>
