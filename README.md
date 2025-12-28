@@ -1,74 +1,74 @@
-# \## 📱 Kullanıcı Arayüzü Özellikleri
+# \ 📱 Kullanıcı Arayüzü Özellikleri
 
-# 
+ 
 
-# \### Ana Sayfa (index.html)
+ \ Ana Sayfa (index.html)
 
-# \- ⭐ Günün kelimesi kutusu (varsa otomatik gösterilir)
+ \- ⭐ Günün kelimesi kutusu (varsa otomatik gösterilir)
 
-# \- 💬 Kelime arandığında örnek cümleler bölümü açılır
+ \- 💬 Kelime arandığında örnek cümleler bölümü açılır
 
-# \- ➕ Giriş yapan kullanıcılar örnek cümle ekleyebilir
+ \- ➕ Giriş yapan kullanıcılar örnek cümle ekleyebilir
 
-# \- 📝 Cümleler anonim olarak gönderilir
+ \- 📝 Cümleler anonim olarak gönderilir
 
-# 
 
-# \### Admin Paneli (admin.html)
 
-# \- 📝 \*\*Kelime İşlemleri\*\*: Ekleme ve güncelleme
+# \ Admin Paneli (admin.html)
 
-# \- 📩 \*\*Öneriler\*\*: Kullanıcı önerilerini onaylama/reddetme
+ \- 📝 \*\*Kelime İşlemleri\*\*: Ekleme ve güncelleme
 
-# \- 💬 \*\*Örnek Cümleler\*\*: Bekleyen cümleleri onaylama/reddetme
+ \- 📩 \*\*Öneriler\*\*: Kullanıcı önerilerini onaylama/reddetme
 
-# \- 📚 \*\*Tüm Kelimeler\*\*: Alfabetik listeleme ve filtreleme
+ \- 💬 \*\*Örnek Cümleler\*\*: Bekleyen cümleleri onaylama/reddetme
 
-# \- 📦 \*\*Arşiv\*\*: Tüm kelime değişikliklerinin geçmişi
+ \- 📚 \*\*Tüm Kelimeler\*\*: Alfabetik listeleme ve filtreleme
 
-# \- ⭐ \*\*Günün Kelimesi\*\*: Günlük kelime belirleme ve arşiv
+ \- 📦 \*\*Arşiv\*\*: Tüm kelime değişikliklerinin geçmişi
 
-# 
+ \- ⭐ \*\*Günün Kelimesi\*\*: Günlük kelime belirleme ve arşiv
 
-# \## 🔒 Güvenlik Notları
+ 
 
-# 
+# \ 🔒 Güvenlik Notları
 
-# 1\. \*\*Anonim Gönderim\*\*: Örnek cümleler kullanıcılar tarafından anonim gönderilir, ancak admin panelinde göndericinin adı görünür.
+ 
 
-# 
+ 1\. \*\*Anonim Gönderim\*\*: Örnek cümleler kullanıcılar tarafından anonim gönderilir, ancak admin panelinde göndericinin adı görünür.
 
-# 2\. \*\*Transaction Kullanımı\*\*: Kritik işlemler için SQL transaction kullanılır (öneri onaylama, kelime ekleme/güncelleme).
+ 
 
-# 
+ 2\. \*\*Transaction Kullanımı\*\*: Kritik işlemler için SQL transaction kullanılır (öneri onaylama, kelime ekleme/güncelleme).
 
-# 3\. \*\*Veri Doğrulama\*\*: Tüm input'lar server-side'da kontrol edilir.
+ 
 
-# 
+ 3\. \*\*Veri Doğrulama\*\*: Tüm input'lar server-side'da kontrol edilir.
 
-# 4\. \*\*SQL Injection Koruması\*\*: Parametreli sorgular kullanılır.
+ 
 
-# 
+ 4\. \*\*SQL Injection Koruması\*\*: Parametreli sorgular kullanılır.
 
-# \## 🎨 UI/UX İyileştirmeleri
+ 
 
-# 
+# \ 🎨 UI/UX İyileştirmeleri
 
-# \- Modern tab sistemi ile düzenli admin paneli
+ 
 
-# \- Gradient renkli günün kelimesi kutusu
+ \- Modern tab sistemi ile düzenli admin paneli
 
-# \- Hover efektleri ve animasyonlar
+ \- Gradient renkli günün kelimesi kutusu
 
-# \- Responsive tasarım (mobil uyumlu)
+ \- Hover efektleri ve animasyonlar
 
-# \- Kullanıcı dostu hata mesajları
+ \- Responsive tasarım (mobil uyumlu)
 
-# 
+ \- Kullanıcı dostu hata mesajları
 
-# \## 📊 Veritabanı İlişkileri
+ 
 
-# 
+# \ 📊 Veritabanı İlişkileri
+
+ 
 
 # ```
 
@@ -94,57 +94,57 @@
 
 # ```
 
-# 
+ 
 
-# \## 🔄 İş Akışları
+# \ 🔄 İş Akışları
 
-# 
+ 
 
-# \### Öneri Onaylama Akışı
+# \ Öneri Onaylama Akışı
 
-# 1\. Kullanıcı kelime önerir → `KelimeOnerileri` tablosuna eklenir (Durum: Beklemede)
+ 1\. Kullanıcı kelime önerir → `KelimeOnerileri` tablosuna eklenir (Durum: Beklemede)
 
-# 2\. Admin önerileri görür → `/api/sozluk/oneriler/bekleyen`
+ 2\. Admin önerileri görür → `/api/sozluk/oneriler/bekleyen`
 
-# 3\. Admin onayla butonuna basar → `/api/admin/oneri/onayla/{id}`
+ 3\. Admin onayla butonuna basar → `/api/admin/oneri/onayla/{id}`
 
-# 4\. Kelime `Kelimeler` tablosuna eklenir
+ 4\. Kelime `Kelimeler` tablosuna eklenir
 
-# 5\. `KelimeOnerileri` durum alanı 'Onaylandi' olur
+ 5\. `KelimeOnerileri` durum alanı 'Onaylandi' olur
 
-# 6\. İşlem `KelimeArsiv` tablosuna kaydedilir
+ 6\. İşlem `KelimeArsiv` tablosuna kaydedilir
 
-# 
+ 
 
-# \### Örnek Cümle Akışı
+# \ Örnek Cümle Akışı
 
-# 1\. Kullanıcı kelime arar ve örnek cümle ekler
+ 1\. Kullanıcı kelime arar ve örnek cümle ekler
 
-# 2\. Cümle `OrnekCumleler` tablosuna eklenir (OnayDurumu: Beklemede)
+ 2\. Cümle `OrnekCumleler` tablosuna eklenir (OnayDurumu: Beklemede)
 
-# 3\. Admin bekleyen cümleleri görür
+ 3\. Admin bekleyen cümleleri görür
 
-# 4\. Onaylanırsa cümle herkese görünür hale gelir
+ 4\. Onaylanırsa cümle herkese görünür hale gelir
 
-# 5\. Reddedilirse durum 'Reddedildi' olur (tabloda kalır ama gösterilmez)
+ 5\. Reddedilirse durum 'Reddedildi' olur (tabloda kalır ama gösterilmez)
 
-# 
+ 
 
-# \## 🎯 Gelecek Özellik Önerileri
+# \ 🎯 Gelecek Özellik Önerileri
 
-# 
+ 
 
-# \- \[ ] Kelime favorileme sistemi (mevcut)
+ \- \[ ] Kelime favorileme sistemi (mevcut)
 
-# \- \[ ] Kullanıcı puanlama sistemi (örnek cümle ve öneri için)
+ \- \[ ] Kullanıcı puanlama sistemi (örnek cümle ve öneri için)
 
-# \- \[ ] Kelime arama geçmişi
+ \- \[ ] Kelime arama geçmişi
 
-# \- \[ ] Popüler kelimeler listesi
+ \- \[ ] Popüler kelimeler listesi
 
-# \- \[ ] REST API dokümantasyonu (Swagger)
+ \- \[ ] REST API dokümantasyonu (Swagger)
 
-# \- \[ ] Kelime kategorileri/etiketleri
+ \- \[ ] Kelime kategorileri/etiketleri
 
 # \- \[ ] Sesli okuma özelliği (Text-to-Speech)
 
