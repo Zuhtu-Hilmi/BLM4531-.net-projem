@@ -22,6 +22,7 @@ app.UseDefaultFiles(); // <--: index.html'i varsayýlan giriþ sayfasý olarak ayar
 app.UseStaticFiles();  // <--: wwwroot klasöründeki dosyalarýn sunulmasýný saðlar
 
 app.UseAuthorization();  // <--: Token veya cookie yok, local storage kullanýlýyor. bu yüzden gereksiz
+                         // Þu an kullanýlmýyor, JWT token eklersek lazým olacak
 
 app.MapControllers();
 

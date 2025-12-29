@@ -197,6 +197,7 @@
                 <button class="tab-btn" onclick="tabAc('kelimeListesi')">📚 Tüm Kelimeler</button>
                 <button class="tab-btn" onclick="tabAc('arsiv')">📦 Arşiv</button>
                 <button class="tab-btn" onclick="tabAc('gununKelimesi')">⭐ Günün Kelimesi</button>
+                <button class="tab-btn" onclick="tabAc('istatistikler')">📊 İstatistikler</button>
             </div>
 
             <!-- KELIME İŞLEMLERİ TAB -->
@@ -306,6 +307,62 @@
                     <div id="gununKelimesiArsivAlani" style="margin-top:15px;"></div>
                 </div>
             </div>
+
+            <!-- İSTATİSTİKLER TAB -->
+            <div id="istatistikler" class="tab-content">
+                <h3>📊 Sistem İstatistikleri</h3>
+
+                <!-- Genel İstatistikler -->
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 30px;">
+                    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 2em; font-weight: bold;" id="statToplamArama">-</div>
+                        <div style="font-size: 0.9em; opacity: 0.9;">Toplam Arama</div>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color: white; padding: 20px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 2em; font-weight: bold;" id="statBugunArama">-</div>
+                        <div style="font-size: 0.9em; opacity: 0.9;">Bugünkü Aramalar</div>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color: white; padding: 20px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 2em; font-weight: bold;" id="statFarkliKelime">-</div>
+                        <div style="font-size: 0.9em; opacity: 0.9;">Farklı Kelime</div>
+                    </div>
+                    <div style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color: white; padding: 20px; border-radius: 8px; text-align: center;">
+                        <div style="font-size: 2em; font-weight: bold;" id="statAktifKullanici">-</div>
+                        <div style="font-size: 0.9em; opacity: 0.9;">Aktif Kullanıcı (24s)</div>
+                    </div>
+                </div>
+
+                <button class="btn-ara" onclick="istatistikleriGetir()">🔄 İstatistikleri Yenile</button>
+                <button class="btn-reddet" onclick="eskiKayitlariTemizle()" style="margin-left: 10px;">🗑️ Eski Kayıtları Temizle (1 yıl+)</button>
+
+                <!-- Popüler Kelimeler -->
+                <h3 style="margin-top: 30px;">🔥 En Popüler Kelimeler (Son 30 Gün)</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sıra</th>
+                            <th>Kelime</th>
+                            <th>Arama Sayısı</th>
+                            <th>Farklı Kullanıcı</th>
+                            <th>Son Arama</th>
+                        </tr>
+                    </thead>
+                    <tbody id="populerKelimelerTablosu"></tbody>
+                </table>
+
+                <!-- Bugünün Popülerleri -->
+                <h3 style="margin-top: 30px;">⚡ Bugün En Çok Aranananlar</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Sıra</th>
+                            <th>Kelime</th>
+                            <th>Arama Sayısı</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bugunPopulerlerTablosu"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -322,6 +379,7 @@
             if (tabId === 'oneriler') onerileriGetir();
             if (tabId === 'ornekCumleler') ornekCumleleriGetir();
             if (tabId === 'arsiv') arsiviGetir();
+            if (tabId === 'istatistikler') istatistikleriGetir();
         }
 
         // KELİME EKLEME
@@ -660,6 +718,87 @@
         function cikisYap() {
             localStorage.clear();
             window.location.href = "giris.html";
+        }
+
+        // İSTATİSTİKLER
+        async function istatistikleriGetir() {
+            try {
+                // Genel istatistikleri getir
+                const statResponse = await fetch('/api/arama/istatistik');
+                const stats = await statResponse.json();
+
+                document.getElementById("statToplamArama").innerText = stats.toplamAramaSayisi.toLocaleString();
+                document.getElementById("statBugunArama").innerText = stats.bugunkuAramalar.toLocaleString();
+                document.getElementById("statFarkliKelime").innerText = stats.farkliKelimelSayisi.toLocaleString();
+                document.getElementById("statAktifKullanici").innerText = stats.aktifKullaniciSayisi24Saat.toLocaleString();
+
+                // Popüler kelimeleri getir
+                const populerResponse = await fetch('/api/arama/populer?limit=20&gunSayisi=30');
+                const populerler = await populerResponse.json();
+
+                const populerTablo = document.getElementById("populerKelimelerTablosu");
+                populerTablo.innerHTML = "";
+
+                populerler.forEach((item, index) => {
+                    let medal = "";
+                    if (index === 0) medal = "🥇";
+                    else if (index === 1) medal = "🥈";
+                    else if (index === 2) medal = "🥉";
+
+                    const satir = document.createElement("tr");
+                    satir.innerHTML = `
+                            <td>${medal} ${index + 1}</td>
+                            <td><strong>${item.kelime}</strong></td>
+                            <td>${item.aramaSayisi}</td>
+                            <td>${item.farkliKullaniciSayisi}</td>
+                            <td>${item.sonArama}</td>
+                        `;
+                    populerTablo.appendChild(satir);
+                });
+
+                // Bugünün popülerlerini getir
+                const bugunResponse = await fetch('/api/arama/populer/bugun?limit=10');
+                const bugunPopuler = await bugunResponse.json();
+
+                const bugunTablo = document.getElementById("bugunPopulerlerTablosu");
+                bugunTablo.innerHTML = "";
+
+                if (bugunPopuler.length === 0) {
+                    bugunTablo.innerHTML = "<tr><td colspan='3' style='text-align:center; color:#999;'>Bugün henüz arama yapılmamış.</td></tr>";
+                } else {
+                    bugunPopuler.forEach((item, index) => {
+                        let medal = "";
+                        if (index === 0) medal = "🥇";
+                        else if (index === 1) medal = "🥈";
+                        else if (index === 2) medal = "🥉";
+
+                        const satir = document.createElement("tr");
+                        satir.innerHTML = `
+                                <td>${medal} ${index + 1}</td>
+                                <td><strong>${item.kelime}</strong></td>
+                                <td>${item.aramaSayisi}</td>
+                            `;
+                        bugunTablo.appendChild(satir);
+                    });
+                }
+
+            } catch (err) {
+                alert("İstatistikler yüklenirken hata oluştu: " + err);
+            }
+        }
+
+        async function eskiKayitlariTemizle() {
+            if (!confirm("1 yıldan eski tüm arama kayıtları silinecek. Emin misiniz?")) return;
+
+            try {
+                const response = await fetch('/api/arama/temizlik', { method: 'DELETE' });
+                if (response.ok) {
+                    alert(await response.text());
+                    istatistikleriGetir();
+                }
+            } catch (err) {
+                alert("Hata: " + err);
+            }
         }
 
         // Sayfa yüklendiğinde önerileri getir

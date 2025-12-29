@@ -1,77 +1,65 @@
-﻿-- sozluk veritabanında çalıştırılacak tablolar
-
+﻿-- Arama Geçmişi ve Popüler Kelimeler için Tablolar
 USE sozluk;
 GO
 
--- Arşiv tablosu (ekleme ve güncelleme kayıtları)
-IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'KelimeArsiv')
+-- Arama Geçmişi Tablosu
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'AramaGecmisi')
 BEGIN
-    CREATE TABLE KelimeArsiv (
+    CREATE TABLE AramaGecmisi (
         Id INT PRIMARY KEY IDENTITY(1,1),
+        KullaniciId INT NULL, -- NULL olabilir (giriş yapmamış kullanıcılar için)
         Kelime NVARCHAR(100) NOT NULL,
-        EskiAnlam NVARCHAR(MAX) NULL,
-        YeniAnlam NVARCHAR(MAX) NOT NULL,
-        Islem NVARCHAR(50) NOT NULL, -- 'Eklendi' veya 'Güncellendi'
-        Tarih DATETIME NOT NULL
+        AramaTarihi DATETIME NOT NULL DEFAULT GETDATE(),
+        IpAdresi NVARCHAR(50) NULL, -- Opsiyonel: İstatistik için
+        INDEX IX_KullaniciId (KullaniciId),
+        INDEX IX_Kelime (Kelime),
+        INDEX IX_AramaTarihi (AramaTarihi)
     );
+    PRINT 'AramaGecmisi tablosu oluşturuldu.';
+END
+ELSE
+BEGIN
+    PRINT 'AramaGecmisi tablosu zaten mevcut.';
 END
 GO
 
--- Örnek cümleler tablosu
-IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'OrnekCumleler')
+-- Popüler Kelimeler için View (Gerçek zamanlı istatistik)
+IF EXISTS (SELECT * FROM sys.views WHERE name = 'PopulerKelimeler')
 BEGIN
-    CREATE TABLE OrnekCumleler (
-        Id INT PRIMARY KEY IDENTITY(1,1),
-        KelimeId INT NOT NULL,
-        KullaniciId INT NOT NULL,
-        Cumle NVARCHAR(500) NOT NULL,
-        OnayDurumu NVARCHAR(20) DEFAULT 'Beklemede', -- 'Beklemede', 'Onaylandi', 'Reddedildi'
-        Tarih DATETIME NOT NULL,
-        FOREIGN KEY (KelimeId) REFERENCES Kelimeler(Id)
-    );
+    DROP VIEW PopulerKelimeler;
 END
 GO
 
--- Günün kelimesi tablosu
-IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'GununKelimesi')
+CREATE VIEW PopulerKelimeler AS
+SELECT 
+    Kelime,
+    COUNT(*) AS AramaSayisi,
+    MAX(AramaTarihi) AS SonArama,
+    COUNT(DISTINCT KullaniciId) AS FarkliKullaniciSayisi
+FROM AramaGecmisi
+WHERE AramaTarihi >= DATEADD(DAY, -30, GETDATE()) -- Son 30 gün
+GROUP BY Kelime;
+GO
+
+PRINT 'PopulerKelimeler view oluşturuldu.';
+GO
+
+-- Temizlik: 1 yıldan eski kayıtları silmek için stored procedure
+IF EXISTS (SELECT * FROM sys.procedures WHERE name = 'EskiAramalariTemizle')
 BEGIN
-    CREATE TABLE GununKelimesi (
-        Id INT PRIMARY KEY IDENTITY(1,1),
-        Kelime NVARCHAR(100) NOT NULL,
-        Anlam NVARCHAR(MAX) NOT NULL,
-        Tarih DATE NOT NULL UNIQUE
-    );
+    DROP PROCEDURE EskiAramalariTemizle;
 END
 GO
 
--- KelimeOnerileri tablosuna Durum kolonu ekle (eğer yoksa)
-IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('KelimeOnerileri') AND name = 'Durum')
+CREATE PROCEDURE EskiAramalariTemizle
+AS
 BEGIN
-    ALTER TABLE KelimeOnerileri
-    ADD Durum NVARCHAR(20) DEFAULT 'Beklemede'; -- 'Beklemede', 'Onaylandi', 'Reddedildi'
-END
-GO
-
--- Kelimeler tablosuna ID kolonu ekle (eğer yoksa - örnek cümleler için gerekli)
-IF NOT EXISTS (SELECT * FROM sys.columns WHERE object_id = OBJECT_ID('Kelimeler') AND name = 'Id')
-BEGIN
-    -- Önce yeni bir tablo oluştur
-    CREATE TABLE Kelimeler_Yeni (
-        Id INT PRIMARY KEY IDENTITY(1,1),
-        Kelime NVARCHAR(100) NOT NULL UNIQUE,
-        Anlam NVARCHAR(MAX) NOT NULL
-    );
+    DELETE FROM AramaGecmisi 
+    WHERE AramaTarihi < DATEADD(YEAR, -1, GETDATE());
     
-    -- Eski verileri aktar
-    INSERT INTO Kelimeler_Yeni (Kelime, Anlam)
-    SELECT Kelime, Anlam FROM Kelimeler;
-    
-    -- Eski tabloyu sil
-    DROP TABLE Kelimeler;
-    
-    -- Yeni tabloyu eski adıyla yeniden adlandır
-    EXEC sp_rename 'Kelimeler_Yeni', 'Kelimeler';
+    PRINT CAST(@@ROWCOUNT AS NVARCHAR) + ' adet eski kayıt silindi.';
 END
 GO
 
-PRINT 'Tüm tablolar başarıyla oluşturuldu!';
+PRINT 'EskiAramalariTemizle procedure oluşturuldu.';
+GO
