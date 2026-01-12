@@ -214,7 +214,6 @@ GET    /api/sozluk/{kelime}                  # Kelime anlamını getir
 POST   /api/sozluk                            # Yeni kelime ekle
 PUT    /api/sozluk/guncelle                   # Kelime güncelle
 GET    /api/sozluk/ara?sorgu={text}           # Kelime ara (autocomplete)
-GET    /api/sozluk/harf/{harf}                # Harfe göre kelimeler
 GET    /api/sozluk/harf-detayli/{harf}        # Harfe göre kelimeler (detaylı)
 POST   /api/sozluk/oner                       # Kelime öner
 GET    /api/sozluk/oneriler/bekleyen          # Bekleyen öneriler
