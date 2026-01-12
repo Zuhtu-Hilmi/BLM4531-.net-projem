@@ -1,199 +1,238 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="tr">
+
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>En Sade Sözlük</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            max-width: 600px;
-            margin: 40px auto;
-            background-color: #f9f9f9;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(180deg, #f8fafc 0%, #e2e8f0 100%);
+            min-height: 100vh;
+            color: #1e293b;
         }
 
-        #txtKelime {
-            width: 70%;
-            padding: 12px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 30px 20px;
         }
 
-        #btnAra {
-            width: 25%;
-            padding: 12px;
-            font-size: 16px;
-            border: none;
-            background-color: #007bff;
-            color: white;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        #sonucAlani {
-            margin-top: 20px;
-            padding: 20px;
-            background-color: #fff;
-            border: 1px solid #eee;
-            border-radius: 5px;
-            min-height: 50px;
-            line-height: 1.6;
-        }
-
-        h2 {
-            border-bottom: 2px solid #eee;
-            padding-bottom: 10px;
-        }
-
-        .harf-butonu {
-            padding: 5px 10px;
-            margin: 2px;
-            border: 1px solid #ddd;
-            background: #fff;
-            cursor: pointer;
-            border-radius: 3px;
-        }
-
-            .harf-butonu:hover {
-                background-color: #007bff;
-                color: white;
-            }
-
-        .liste-satir {
-            border-bottom: 1px solid #eee;
-            padding: 15px 10px;
+        /* Header / User Panel */
+        .user-panel {
             display: flex;
-            flex-direction: row;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
-            gap: 20px;
-        }
-
-        .kelime-baslik {
-            font-weight: bold;
-            font-size: 1.1em;
-            color: #2c3e50;
-            margin-bottom: 0;
-            min-width: 120px;
-        }
-
-        .gizli-anlam {
-            background-color: #e0e0e0;
-            color: transparent;
-            text-shadow: 0 0 8px rgba(0,0,0,0.5);
-            cursor: pointer;
-            padding: 8px 12px;
-            border-radius: 4px;
-            user-select: none;
-            transition: all 0.3s ease;
-            flex: 1;
-            text-align: right;
-        }
-
-        .acik-anlam {
-            background-color: transparent;
-            color: #555;
-            text-shadow: none;
-            cursor: default;
-            padding: 8px 12px;
-            flex: 1;
-            text-align: right;
-            border-radius: 4px;
-        }
-
-        #fihristListesi {
-            margin-top: 20px;
-            text-align: left;
-            min-height: 800px;
-        }
-
-        .favori-grid-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 15px;
-            padding: 10px 0;
-        }
-
-        .favori-kart {
-            background: #fff;
-            border: 1px solid #e1e4e8;
-            border-left: 5px solid #f1c40f;
-            border-radius: 8px;
-            padding: 15px;
-            position: relative;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-            .favori-kart:hover {
-                transform: translateY(-3px);
-                box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            }
-
-        .fav-kelime {
-            font-size: 1.2em;
-            font-weight: bold;
-            color: #2c3e50;
-            margin-bottom: 5px;
-            display: block;
-        }
-
-        .fav-anlam {
-            font-size: 0.95em;
-            color: #555;
-            line-height: 1.4;
+            gap: 12px;
+            flex-wrap: wrap;
             margin-bottom: 25px;
-            display: block;
         }
 
-        .btn-fav-sil {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            background-color: #ffebee;
-            color: #c62828;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 0.8em;
-            cursor: pointer;
-            font-weight: bold;
-            transition: background 0.2s;
-        }
-
-            .btn-fav-sil:hover {
-                background-color: #ffcdd2;
+            .user-panel a {
+                color: #667eea;
+                text-decoration: none;
+                font-weight: 500;
+                padding: 10px 20px;
+                background: rgba(102, 126, 234, 0.1);
+                border-radius: 10px;
+                transition: all 0.3s ease;
             }
+
+                .user-panel a:hover {
+                    background: rgba(102, 126, 234, 0.2);
+                }
+
+        .user-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+            .user-actions button {
+                padding: 10px 18px;
+                border: none;
+                border-radius: 10px;
+                font-weight: 600;
+                font-family: inherit;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                font-size: 0.9em;
+            }
+
+        .btn-fav {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-sifre {
+            background: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+            color: white;
+        }
+
+        .btn-sil {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+            color: white;
+        }
+
+        .btn-cikis {
+            background: rgba(100, 116, 139, 0.15);
+            color: #475569;
+        }
+
+        .btn-oner {
+            background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);
+            color: white;
+        }
+
+        .user-actions button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Word of the Day */
+        .gunun-kelimesi-kutu {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px -15px rgba(102, 126, 234, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+            .gunun-kelimesi-kutu::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                right: -50%;
+                width: 100%;
+                height: 100%;
+                background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+                pointer-events: none;
+            }
+
+            .gunun-kelimesi-kutu h3 {
+                font-size: 1em;
+                font-weight: 500;
+                opacity: 0.9;
+                margin-bottom: 15px;
+            }
+
+            .gunun-kelimesi-kutu .kelime {
+                font-size: 2.2em;
+                font-weight: 700;
+                margin-bottom: 10px;
+                letter-spacing: -0.5px;
+            }
+
+            .gunun-kelimesi-kutu .anlam {
+                font-size: 1.1em;
+                line-height: 1.6;
+                opacity: 0.95;
+            }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+            .hero h1 {
+                font-size: 2.5em;
+                font-weight: 700;
+                color: #1e293b;
+                margin-bottom: 12px;
+                letter-spacing: -1px;
+            }
+
+            .hero p {
+                color: #64748b;
+                font-size: 1.1em;
+                max-width: 500px;
+                margin: 0 auto;
+            }
+
+        /* Search Section */
+        .search-section {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
 
         .arama-wrapper {
             position: relative;
-            display: inline-block;
-            width: 70%;
+            display: flex;
+            gap: 12px;
         }
 
+        #txtKelime {
+            flex: 1;
+            padding: 18px 24px;
+            font-size: 1.1em;
+            font-family: inherit;
+            border: 2px solid #e2e8f0;
+            border-radius: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+            #txtKelime:focus {
+                border-color: #667eea;
+                box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.15);
+            }
+
+        #btnAra {
+            padding: 18px 35px;
+            font-size: 1.1em;
+            font-weight: 600;
+            font-family: inherit;
+            border: none;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            #btnAra:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 15px 30px -10px rgba(102, 126, 234, 0.5);
+            }
+
+        /* Autocomplete */
         .oneri-kutusu {
             position: absolute;
             top: 100%;
             left: 0;
-            right: 0;
-            background-color: #fff;
-            border: 1px solid #ddd;
+            right: 80px;
+            background-color: white;
+            border: 1px solid #e2e8f0;
             border-top: none;
-            border-radius: 0 0 8px 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            border-radius: 0 0 14px 14px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
             z-index: 1000;
             display: none;
-            max-height: 250px;
+            max-height: 280px;
             overflow-y: auto;
         }
 
         .oneri-satir {
-            padding: 12px 15px;
+            padding: 14px 20px;
             cursor: pointer;
-            border-bottom: 1px solid #f5f5f5;
-            color: #333;
-            text-align: left;
-            transition: background 0.2s;
+            border-bottom: 1px solid #f1f5f9;
+            color: #334155;
+            transition: all 0.2s ease;
         }
 
             .oneri-satir:last-child {
@@ -201,190 +240,723 @@
             }
 
             .oneri-satir:hover {
-                background-color: #f0f8ff;
-                color: #007bff;
+                background-color: #f8fafc;
+                color: #667eea;
                 font-weight: 500;
             }
 
-        .kalin-yazi {
-            font-weight: bold;
-            color: #000;
+        /* Result Box */
+        #sonucAlani {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
+            margin-bottom: 20px;
+            min-height: 100px;
+            line-height: 1.8;
+            font-size: 1.05em;
+            color: #334155;
         }
 
-        /* Günün Kelimesi Kutusu */
-        .gunun-kelimesi-kutu {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-
-            .gunun-kelimesi-kutu h3 {
-                margin-top: 0;
-                font-size: 1.1em;
-                opacity: 0.9;
-            }
-
-            .gunun-kelimesi-kutu .kelime {
-                font-size: 2em;
-                font-weight: bold;
-                margin: 10px 0;
-            }
-
-            .gunun-kelimesi-kutu .anlam {
-                font-size: 1.1em;
-                line-height: 1.5;
-                opacity: 0.95;
-            }
-
-        /* Örnek Cümle Alanı */
+        /* Example Sentences */
         .ornek-cumle-alani {
-            background-color: #f8f9fa;
-            padding: 15px;
-            border-radius: 5px;
-            margin-top: 15px;
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 16px;
+            margin-bottom: 20px;
         }
+
+            .ornek-cumle-alani h4 {
+                font-size: 1.1em;
+                color: #334155;
+                margin-bottom: 15px;
+            }
 
         .ornek-cumle-item {
             background-color: white;
-            padding: 12px;
-            border-left: 3px solid #007bff;
-            margin: 10px 0;
-            border-radius: 3px;
+            padding: 16px 20px;
+            border-left: 4px solid #667eea;
+            margin: 12px 0;
+            border-radius: 10px;
+            font-style: italic;
+            color: #475569;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
 
         .ornek-cumle-form {
-            margin-top: 10px;
-            padding: 15px;
-            background-color: #e3f2fd;
-            border-radius: 5px;
+            margin-top: 15px;
+            padding: 20px;
+            background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+            border-radius: 12px;
+        }
+
+            .ornek-cumle-form h4 {
+                margin-bottom: 10px;
+            }
+
+            .ornek-cumle-form textarea {
+                width: 100%;
+                padding: 14px;
+                border: 1px solid #bfdbfe;
+                border-radius: 10px;
+                font-family: inherit;
+                font-size: 0.95em;
+                resize: vertical;
+                margin-bottom: 15px;
+            }
+
+                .ornek-cumle-form textarea:focus {
+                    outline: none;
+                    border-color: #667eea;
+                }
+
+            .ornek-cumle-form button {
+                padding: 12px 24px;
+                border: none;
+                border-radius: 10px;
+                font-weight: 600;
+                font-family: inherit;
+                cursor: pointer;
+                margin-right: 10px;
+                transition: all 0.3s ease;
+            }
+
+        /* Favorite Button */
+        #btnFavori {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #1e293b;
+            border: none;
+            border-radius: 14px;
+            font-weight: 600;
+            font-family: inherit;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 30px;
+        }
+
+            #btnFavori:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 15px 30px -10px rgba(251, 191, 36, 0.5);
+            }
+
+        /* Popular & History Grid */
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .info-card {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 8px 25px -8px rgba(0, 0, 0, 0.08);
+        }
+
+            .info-card h3 {
+                font-size: 1.1em;
+                padding-bottom: 12px;
+                margin-bottom: 15px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+                .info-card h3.popular {
+                    color: #e74c3c;
+                    border-bottom: 2px solid #fecdd3;
+                }
+
+                .info-card h3.history {
+                    color: #27ae60;
+                    border-bottom: 2px solid #bbf7d0;
+                }
+
+        .filter-buttons {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .filter-btn {
+            padding: 8px 14px;
+            font-size: 0.85em;
+            font-weight: 600;
+            font-family: inherit;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+            .filter-btn:hover {
+                transform: translateY(-1px);
+            }
+
+        .list-item {
+            padding: 14px 0;
+            border-bottom: 1px solid #f1f5f9;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+            .list-item:hover {
+                background: #f8fafc;
+                padding-left: 10px;
+                margin-left: -10px;
+                margin-right: -10px;
+                padding-right: 10px;
+            }
+
+            .list-item strong {
+                color: #334155;
+            }
+
+            .list-item .meta {
+                font-size: 0.85em;
+                color: #94a3b8;
+            }
+
+        /* Alphabet Section */
+        .alphabet-section {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+            .alphabet-section h3 {
+                text-align: center;
+                font-size: 1.3em;
+                color: #1e293b;
+                margin-bottom: 10px;
+            }
+
+            .alphabet-section p {
+                text-align: center;
+                color: #64748b;
+                font-size: 0.95em;
+                margin-bottom: 25px;
+            }
+
+        #harfButonlari {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .harf-butonu {
+            padding: 12px 16px;
+            font-weight: 600;
+            font-family: inherit;
+            border: 2px solid #e2e8f0;
+            background: white;
+            cursor: pointer;
+            border-radius: 10px;
+            color: #475569;
+            transition: all 0.3s ease;
+        }
+
+            .harf-butonu:hover {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                border-color: transparent;
+                transform: translateY(-2px);
+            }
+
+        /* Word List */
+        #fihristListesi {
+            margin-top: 25px;
+            min-height: 200px;
+        }
+
+        .liste-satir {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+            .liste-satir:hover {
+                background: #f1f5f9;
+            }
+
+        .kelime-baslik {
+            font-weight: 600;
+            font-size: 1.1em;
+            color: #1e293b;
+            min-width: 140px;
+        }
+
+        .gizli-anlam {
+            background: linear-gradient(135deg, #94a3b8 0%, #64748b 100%);
+            color: transparent;
+            text-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            padding: 12px 18px;
+            border-radius: 10px;
+            user-select: none;
+            transition: all 0.3s ease;
+            flex: 1;
+            text-align: right;
+            margin-left: 20px;
+        }
+
+        .acik-anlam {
+            background: transparent;
+            color: #475569;
+            text-shadow: none;
+            cursor: default;
+            padding: 12px 18px;
+            flex: 1;
+            text-align: right;
+            margin-left: 20px;
+        }
+
+        /* Favorites Section */
+        .favori-grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            padding: 10px 0;
+        }
+
+        .favori-kart {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-left: 5px solid #fbbf24;
+            border-radius: 14px;
+            padding: 20px;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+            .favori-kart:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            }
+
+        .fav-kelime {
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .fav-anlam {
+            font-size: 0.95em;
+            color: #64748b;
+            line-height: 1.5;
+            margin-bottom: 30px;
+            display: block;
+        }
+
+        .btn-fav-sil {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: #dc2626;
+            border: none;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 0.85em;
+            cursor: pointer;
+            font-weight: 600;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+            .btn-fav-sil:hover {
+                background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%);
+                transform: translateY(-1px);
+            }
+
+        /* Favorites Modal */
+        .favori-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .favori-modal-content {
+            background: white;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 900px;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .favori-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 30px;
+            border-bottom: 1px solid #e2e8f0;
+            position: sticky;
+            top: 0;
+            background: white;
+            border-radius: 20px 20px 0 0;
+            z-index: 10;
+        }
+
+            .favori-modal-header h3 {
+                font-size: 1.4em;
+                color: #1e293b;
+                margin: 0;
+            }
+
+        .favori-modal-close {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: #f1f5f9;
+            border-radius: 10px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #64748b;
+        }
+
+            .favori-modal-close:hover {
+                background: #e2e8f0;
+                color: #1e293b;
+            }
+
+        .favori-modal-content .favori-grid-container {
+            padding: 30px;
+        }
+
+        /* Forms */
+        .form-overlay {
+            background: white;
+            padding: 25px;
+            border-radius: 16px;
+            border: 1px solid #e2e8f0;
+            margin-top: 15px;
+        }
+
+            .form-overlay h4 {
+                margin-bottom: 15px;
+                color: #1e293b;
+            }
+
+            .form-overlay input,
+            .form-overlay textarea {
+                width: 100%;
+                padding: 14px;
+                border: 1px solid #e2e8f0;
+                border-radius: 10px;
+                font-family: inherit;
+                font-size: 0.95em;
+                margin-bottom: 12px;
+            }
+
+                .form-overlay input:focus,
+                .form-overlay textarea:focus {
+                    outline: none;
+                    border-color: #667eea;
+                }
+
+            .form-overlay button {
+                padding: 12px 24px;
+                border: none;
+                border-radius: 10px;
+                font-weight: 600;
+                font-family: inherit;
+                cursor: pointer;
+                margin-right: 10px;
+                transition: all 0.3s ease;
+            }
+
+        @media (max-width: 768px) {
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .arama-wrapper {
+                flex-direction: column;
+            }
+
+            #btnAra {
+                width: 100%;
+            }
+
+            .oneri-kutusu {
+                right: 0;
+            }
+
+            .hero h1 {
+                font-size: 2em;
+            }
+
+            .user-actions {
+                justify-content: center;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div style="text-align: right; padding: 10px;">
-        <span id="panelGirisYok">
-            <a href="/giris.html" style="text-decoration:none; color: #007bff;">Giriş Yap / Kayıt Ol</a>
-        </span>
+    <div class="container">
+        <!-- User Panel -->
+        <div class="user-panel">
+            <span id="panelGirisYok">
+                <a href="/giris.html">Giriş Yap / Kayıt Ol</a>
+            </span>
 
-        <div id="panelKullanici" style="display: none; text-align: right;">
-            <div style="margin-bottom: 10px;">
-                <button onclick="favorileriGoster()">❤️ Favoriler</button>
-                <button onclick="formuGosterGizle()" style="background-color: #f39c12;">🔑 Şifre Değiştir</button>
-                <button onclick="hesapSil()" style="background-color: #dc3545;">⚠️ Hesabı Sil</button>
-                <button onclick="cikisYap()">Çıkış</button>
-            </div>
-
-            <div id="sifreDegistirmeFormu" style="display: none; background: #eee; padding: 10px; border-radius: 5px; margin-top: 10px; text-align: left;">
-                <h4>Şifre Güncelleme</h4>
-                <input type="password" id="txtEskiSifre" placeholder="Mevcut Şifreniz" style="width: 90%; margin-bottom: 5px;">
-                <input type="password" id="txtYeniSifre" placeholder="Yeni Şifreniz" style="width: 90%; margin-bottom: 5px;">
-                <br>
-                <button onclick="sifreGuncelle()" style="background-color: #27ae60;">Kaydet</button>
-                <button onclick="formuGosterGizle()" style="background-color: #7f8c8d;">İptal</button>
-            </div>
-
-            <button onclick="oneriFormuGoster()" style="background-color: #9b59b6;">💡 Kelime Öner</button>
-
-            <div id="oneriFormu" style="display: none; background: #e8f8f5; padding: 10px; border-radius: 5px; margin-top: 10px; text-align: left;">
-                <h4>Sözlüğe Katkıda Bulun</h4>
-                <input type="text" id="txtOneriKelime" placeholder="Önerdiğiniz Kelime" style="width: 90%; margin-bottom: 5px;">
-                <textarea id="txtOneriAnlam" placeholder="Kelimenin Anlamı" style="width: 90%; height: 60px; margin-bottom: 5px;"></textarea>
-                <br>
-                <button onclick="oneriGonder()" style="background-color: #2ecc71;">Gönder</button>
-                <button onclick="oneriFormuGoster()" style="background-color: #95a5a6;">İptal</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Günün Kelimesi -->
-    <div id="gununKelimesiKutusu" class="gunun-kelimesi-kutu" style="display:none;">
-        <h3>⭐ Günün Kelimesi</h3>
-        <div class="kelime" id="gununKelimesiBaslik"></div>
-        <div class="anlam" id="gununKelimesiAnlam"></div>
-    </div>
-
-    <h2>Basit Sözlük</h2>
-
-    <p>Aradığınız kelimenin anlamını, dikkat dağıtıcı hiçbir unsur olmadan anında öğrenin.</p>
-
-    <div class="arama-wrapper">
-        <input type="text" id="txtKelime" placeholder="Kelime girin..." autocomplete="off" style="width: 100%; box-sizing: border-box;" />
-        <div id="ozelOneriKutusu" class="oneri-kutusu"></div>
-    </div>
-
-    <button id="btnAra">Ara</button>
-
-    <hr style="border: none; border-top: 1px solid #eee; margin-top: 25px;">
-
-    <div id="sonucAlani">
-        ...
-    </div>
-
-    <!-- Örnek Cümleler Alanı -->
-    <div id="ornekCumlelerAlani" class="ornek-cumle-alani" style="display:none;">
-        <h4>📝 Örnek Cümleler</h4>
-        <div id="ornekCumlelerListesi"></div>
-
-        <div id="ornekCumleFormAlani" style="display:none;">
-            <button onclick="ornekCumleFormuAc()" style="background-color: #007bff; color: white; padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer;">+ Örnek Cümle Ekle</button>
-
-            <div id="ornekCumleFormu" class="ornek-cumle-form" style="display:none;">
-                <h4>Örnek Cümlenizi Ekleyin</h4>
-                <p style="font-size: 0.9em; color: #666;">Cümleniz anonim olarak gönderilecek ve onaydan sonra yayınlanacaktır.</p>
-                <textarea id="txtOrnekCumle" placeholder="Örnek cümlenizi buraya yazın..." style="width: 100%; height: 80px; padding: 10px;"></textarea>
-                <button onclick="ornekCumleGonder()" style="background-color: #28a745; color: white; padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer;">Gönder</button>
-                <button onclick="ornekCumleFormuKapat()" style="background-color: #6c757d; color: white; padding: 8px 15px; border: none; border-radius: 5px; cursor: pointer;">İptal</button>
-            </div>
-        </div>
-    </div>
-
-    <button id="btnFavori" style="display:none; margin-top:15px; width:100%; padding:10px; background:#ffc107; border:none; border-radius:5px; cursor:pointer;">
-        ⭐ Bu Kelimeyi Favorilere Ekle
-    </button>
-
-    <div id="favoriListesiAlani" style="margin-top:30px; display:none; border-top:1px solid #eee; padding-top:20px;">
-        <h3>Favorilerim</h3>
-        <div id="favoriGrid" class="favori-grid-container"></div>
-    </div>
-
-    <!-- Popüler Kelimeler ve Arama Geçmişi -->
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px;">
-        <!-- Popüler Kelimeler -->
-        <div style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-            <h3 style="color: #e74c3c; border-bottom: 2px solid #e74c3c;">🔥 Popüler Kelimeler</h3>
-            <div style="display: flex; gap: 5px; margin-bottom: 10px;">
-                <button onclick="populerKelimeleriGetir(30)" style="padding: 5px 10px; font-size: 0.85em; background: #3498db; color: white; border: none; border-radius: 3px; cursor: pointer;">Son 30 Gün</button>
-                <button onclick="populerKelimeleriGetir(7)" style="padding: 5px 10px; font-size: 0.85em; background: #9b59b6; color: white; border: none; border-radius: 3px; cursor: pointer;">Son 7 Gün</button>
-                <button onclick="bugunPopulerler()" style="padding: 5px 10px; font-size: 0.85em; background: #e67e22; color: white; border: none; border-radius: 3px; cursor: pointer;">Bugün</button>
-            </div>
-            <div id="populerKelimelerListesi" style="max-height: 400px; overflow-y: auto;">
-                <p style="color: #999; text-align: center;">Yükleniyor...</p>
+            <div id="panelKullanici" class="user-actions" style="display: none;">
+                <button class="btn-fav" onclick="favorileriGoster()">❤️ Favoriler</button>
+                <button class="btn-oner" onclick="oneriFormuGoster()">💡 Kelime Öner</button>
+                <button class="btn-sifre" onclick="formuGosterGizle()">🔑 Şifre Değiştir</button>
+                <button class="btn-sil" onclick="hesapSil()">⚠️ Hesabı Sil</button>
+                <button class="btn-cikis" onclick="cikisYap()">Çıkış</button>
             </div>
         </div>
 
-        <!-- Arama Geçmişi -->
-        <div id="aramaGecmisiAlani" style="background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: none;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <h3 style="color: #27ae60; border-bottom: 2px solid #27ae60; margin: 0;">🕐 Arama Geçmişim</h3>
-                <button onclick="aramaGecmisiniTemizle()" style="padding: 5px 10px; font-size: 0.8em; background: #e74c3c; color: white; border: none; border-radius: 3px; cursor: pointer;">Temizle</button>
-            </div>
-            <div id="aramaGecmisiListesi" style="max-height: 400px; overflow-y: auto;">
-                <p style="color: #999; text-align: center;">Yükleniyor...</p>
+        <!-- Password Change Modal -->
+        <div id="sifreModal" class="favori-modal" style="display: none;">
+            <div class="favori-modal-content" style="max-width: 450px;">
+                <div class="favori-modal-header">
+                    <h3>🔑 Şifre Değiştir</h3>
+                    <button class="favori-modal-close" onclick="sifreModalKapat()">✕</button>
+                </div>
+                <div style="padding: 30px;">
+                    <input type="password" id="txtEskiSifre" placeholder="Mevcut Şifreniz"
+                           style="width: 100%; padding: 14px; border: 1px solid #e2e8f0; border-radius: 10px; font-family: inherit; margin-bottom: 15px;">
+                    <input type="password" id="txtYeniSifre" placeholder="Yeni Şifreniz"
+                           style="width: 100%; padding: 14px; border: 1px solid #e2e8f0; border-radius: 10px; font-family: inherit; margin-bottom: 20px;">
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="sifreGuncelle()"
+                                style="flex: 1; padding: 14px; background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; font-family: inherit;">
+                            Kaydet
+                        </button>
+                        <button onclick="sifreModalKapat()"
+                                style="flex: 1; padding: 14px; background: #94a3b8; color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; font-family: inherit;">
+                            İptal
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div id="harfAlani" style="margin-top: 30px; text-align: center;">
-        <h3>Fihrist & Çalışma Modu</h3>
-        <p style="font-size: 0.9em; color: #666;">Bir harfe basın. Anlamı görmek için bulanık alana tıklayın.</p>
-        <div id="harfButonlari"></div>
-    </div>
+        <!-- Suggestion Modal -->
+        <div id="oneriModal" class="favori-modal" style="display: none;">
+            <div class="favori-modal-content" style="max-width: 500px;">
+                <div class="favori-modal-header">
+                    <h3>💡 Kelime Öner</h3>
+                    <button class="favori-modal-close" onclick="oneriModalKapat()">✕</button>
+                </div>
+                <div style="padding: 30px;">
+                    <p style="color: #64748b; margin-bottom: 20px;">
+                        Sözlüğe katkıda bulunun! Önerdiğiniz kelime
+                        incelendikten sonra eklenecektir.
+                    </p>
+                    <input type="text" id="txtOneriKelime" placeholder="Önerdiğiniz Kelime"
+                           style="width: 100%; padding: 14px; border: 1px solid #e2e8f0; border-radius: 10px; font-family: inherit; margin-bottom: 15px;">
+                    <textarea id="txtOneriAnlam" placeholder="Kelimenin Anlamı" rows="4"
+                              style="width: 100%; padding: 14px; border: 1px solid #e2e8f0; border-radius: 10px; font-family: inherit; margin-bottom: 20px; resize: vertical;"></textarea>
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="oneriGonder()"
+                                style="flex: 1; padding: 14px; background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; font-family: inherit;">
+                            Gönder
+                        </button>
+                        <button onclick="oneriModalKapat()"
+                                style="flex: 1; padding: 14px; background: #94a3b8; color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; font-family: inherit;">
+                            İptal
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <div id="fihristListesi" style="margin-top: 20px; text-align: left;">
+        <!-- Account Delete Confirmation Modal -->
+        <div id="hesapSilModal" class="favori-modal" style="display: none;">
+            <div class="favori-modal-content" style="max-width: 450px;">
+                <div class="favori-modal-header"
+                     style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); border-radius: 20px 20px 0 0;">
+                    <h3 style="color: #dc2626;">⚠️ Hesabı Sil</h3>
+                    <button class="favori-modal-close" onclick="hesapSilModalKapat()"
+                            style="background: #fca5a5; color: #dc2626;">
+                        ✕
+                    </button>
+                </div>
+                <div style="padding: 30px; text-align: center;">
+                    <p style="color: #1e293b; font-size: 1.1em; margin-bottom: 10px;"><strong>Dikkat!</strong></p>
+                    <p style="color: #64748b; margin-bottom: 25px;">
+                        Hesabınız ve tüm favorileriniz kalıcı olarak
+                        silinecek. Bu işlem geri alınamaz!
+                    </p>
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="hesapSilOnayla()"
+                                style="flex: 1; padding: 14px; background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; font-family: inherit;">
+                            Evet,
+                            Hesabımı Sil
+                        </button>
+                        <button onclick="hesapSilModalKapat()"
+                                style="flex: 1; padding: 14px; background: #94a3b8; color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; font-family: inherit;">
+                            Vazgeç
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Word of the Day -->
+        <div id="gununKelimesiKutusu" class="gunun-kelimesi-kutu" style="display:none;">
+            <h3>⭐ Günün Kelimesi</h3>
+            <div class="kelime" id="gununKelimesiBaslik"></div>
+            <div class="anlam" id="gununKelimesiAnlam"></div>
+        </div>
+
+        <!-- Hero -->
+        <div class="hero">
+            <h1>📚 Basit Sözlük</h1>
+            <p>Aradığınız kelimenin anlamını, dikkat dağıtıcı hiçbir unsur olmadan anında öğrenin.</p>
+        </div>
+
+        <!-- Search Section -->
+        <div class="search-section">
+            <div class="arama-wrapper">
+                <input type="text" id="txtKelime" placeholder="Kelime ara..." autocomplete="off" />
+                <button id="btnAra">Ara</button>
+                <div id="ozelOneriKutusu" class="oneri-kutusu"></div>
+            </div>
+        </div>
+
+        <!-- Result -->
+        <div id="sonucAlani">
+            Arama yapmak için yukarıya bir kelime yazın...
+        </div>
+
+        <!-- Example Sentences -->
+        <div id="ornekCumlelerAlani" class="ornek-cumle-alani" style="display:none;">
+            <h4>📝 Örnek Cümleler</h4>
+            <div id="ornekCumlelerListesi"></div>
+
+            <div id="ornekCumleFormAlani" style="display:none;">
+                <button onclick="ornekCumleFormuAc()"
+                        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 12px 20px; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; font-family: inherit;">
+                    +
+                    Örnek Cümle Ekle
+                </button>
+
+                <div id="ornekCumleFormu" class="ornek-cumle-form" style="display:none;">
+                    <h4>Örnek Cümlenizi Ekleyin</h4>
+                    <p style="font-size: 0.9em; color: #64748b; margin-bottom: 15px;">
+                        Cümleniz anonim olarak
+                        gönderilecek ve onaydan sonra yayınlanacaktır.
+                    </p>
+                    <textarea id="txtOrnekCumle" placeholder="Örnek cümlenizi buraya yazın..." rows="3"></textarea>
+                    <button onclick="ornekCumleGonder()"
+                            style="background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%); color: white;">
+                        Gönder
+                    </button>
+                    <button onclick="ornekCumleFormuKapat()" style="background: #94a3b8; color: white;">İptal</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Favorite Button -->
+        <button id="btnFavori" style="display:none;">
+            ⭐ Bu Kelimeyi Favorilere Ekle
+        </button>
+
+        <!-- Favorites Modal/Tab -->
+        <div id="favoriModal" class="favori-modal" style="display:none;">
+            <div class="favori-modal-content">
+                <div class="favori-modal-header">
+                    <h3>❤️ Favorilerim</h3>
+                    <button class="favori-modal-close" onclick="favorileriKapat()">✕</button>
+                </div>
+                <div id="favoriGrid" class="favori-grid-container"></div>
+            </div>
+        </div>
+
+        <!-- Popular & History -->
+        <div class="info-grid">
+            <div class="info-card">
+                <h3 class="popular">🔥 Popüler Kelimeler</h3>
+                <div class="filter-buttons">
+                    <button class="filter-btn" onclick="populerKelimeleriGetir(30)"
+                            style="background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);">
+                        Son 30 Gün
+                    </button>
+                    <button class="filter-btn" onclick="populerKelimeleriGetir(7)"
+                            style="background: linear-gradient(135deg, #9b59b6 0%, #8e44ad 100%);">
+                        Son 7 Gün
+                    </button>
+                    <button class="filter-btn" onclick="bugunPopulerler()"
+                            style="background: linear-gradient(135deg, #e67e22 0%, #d35400 100%);">
+                        Bugün
+                    </button>
+                </div>
+                <div id="populerKelimelerListesi" style="max-height: 400px; overflow-y: auto;">
+                    <p style="color: #94a3b8; text-align: center;">Yükleniyor...</p>
+                </div>
+            </div>
+
+            <div id="aramaGecmisiAlani" class="info-card" style="display: none;">
+                <h3 class="history">
+                    🕐 Arama Geçmişim
+                    <button onclick="aramaGecmisiniTemizle()"
+                            style="padding: 6px 12px; font-size: 0.8em; background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-family: inherit;">
+                        Temizle
+                    </button>
+                </h3>
+                <div id="aramaGecmisiListesi" style="max-height: 400px; overflow-y: auto;">
+                    <p style="color: #94a3b8; text-align: center;">Yükleniyor...</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Alphabet Section -->
+        <div class="alphabet-section">
+            <h3>📖 Fihrist & Çalışma Modu</h3>
+            <p>Bir harfe basın. Anlamı görmek için bulanık alana tıklayın.</p>
+            <div id="harfButonlari"></div>
+            <div id="fihristListesi"></div>
+        </div>
     </div>
 
     <script>
@@ -398,7 +970,7 @@
         const kullaniciId = localStorage.getItem("sozluk_uid");
         if (kullaniciId) {
             panelGirisYok.style.display = "none";
-            panelKullanici.style.display = "block";
+            panelKullanici.style.display = "flex";
         }
 
         araButonu.addEventListener("click", aramaYap);
@@ -457,14 +1029,14 @@
 
             sonucAlani.innerText = "Aranıyor...";
             btnFavori.style.display = "none";
-            document.getElementById("favoriListesiAlani").style.display = "none";
+            document.getElementById("favoriModal").style.display = "none";
             document.getElementById("ornekCumlelerAlani").style.display = "none";
 
             try {
                 const response = await fetch('/api/sozluk/' + kelime);
                 if (response.ok) {
                     const anlam = await response.text();
-                    sonucAlani.style.color = "#000";
+                    sonucAlani.style.color = "#1e293b";
                     sonucAlani.innerText = anlam;
                     sonArananKelime = kelime;
                     sonBulunanAnlam = anlam;
@@ -473,18 +1045,15 @@
                         btnFavori.style.display = "block";
                     }
 
-                    // Aramayı kaydet
                     await aramaKaydet(kelime);
 
-                    // Arama geçmişini güncelle (eğer açıksa)
                     if (kullaniciId && document.getElementById("aramaGecmisiAlani").style.display === "block") {
                         await aramaGecmisiniGetir();
                     }
 
-                    // Örnek cümleleri getir
                     await ornekCumleleriGetir(kelime);
                 } else {
-                    sonucAlani.style.color = "#b22222";
+                    sonucAlani.style.color = "#dc2626";
                     sonucAlani.innerText = "Kelime bulunamadı.";
                 }
             } catch (error) {
@@ -492,7 +1061,6 @@
             }
         }
 
-        // Aramayı kaydet
         async function aramaKaydet(kelime) {
             try {
                 const veri = {
@@ -510,7 +1078,6 @@
             }
         }
 
-        // Arama Geçmişi
         async function aramaGecmisiniGetir() {
             if (!kullaniciId) return;
 
@@ -518,7 +1085,7 @@
             const liste = document.getElementById("aramaGecmisiListesi");
 
             alan.style.display = "block";
-            liste.innerHTML = "<p style='color: #999; text-align: center;'>Yükleniyor...</p>";
+            liste.innerHTML = "<p style='color: #94a3b8; text-align: center;'>Yükleniyor...</p>";
 
             try {
                 const response = await fetch('/api/arama/gecmis/' + kullaniciId + '?limit=20');
@@ -527,34 +1094,26 @@
                 liste.innerHTML = "";
 
                 if (gecmis.length === 0) {
-                    liste.innerHTML = "<p style='color: #999; text-align: center;'>Henüz arama geçmişiniz yok.</p>";
+                    liste.innerHTML = "<p style='color: #94a3b8; text-align: center;'>Henüz arama geçmişiniz yok.</p>";
                     return;
                 }
 
                 gecmis.forEach(item => {
                     const div = document.createElement("div");
-                    div.style.cssText = "padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; transition: background 0.2s;";
+                    div.className = "list-item";
                     div.innerHTML = `
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <strong style="color: #2c3e50;">${item.kelime}</strong>
-                                <span style="font-size: 0.85em; color: #999;">
-                                    ${item.aramaSayisi}x · ${item.sonArama}
-                                </span>
-                            </div>
+                            <strong>${item.kelime}</strong>
+                            <span class="meta">${item.aramaSayisi}x · ${item.sonArama}</span>
                         `;
-
-                    div.onmouseover = () => div.style.backgroundColor = "#f8f9fa";
-                    div.onmouseout = () => div.style.backgroundColor = "transparent";
                     div.onclick = () => {
                         kelimeKutusu.value = item.kelime;
                         aramaYap();
                     };
-
                     liste.appendChild(div);
                 });
 
             } catch (err) {
-                liste.innerHTML = "<p style='color: #e74c3c;'>Hata: " + err.message + "</p>";
+                liste.innerHTML = "<p style='color: #dc2626;'>Hata: " + err.message + "</p>";
             }
         }
 
@@ -566,17 +1125,16 @@
                 const response = await fetch('/api/arama/gecmis/temizle/' + kullaniciId, { method: 'DELETE' });
                 if (response.ok) {
                     alert(await response.text());
-                    document.getElementById("aramaGecmisiListesi").innerHTML = "<p style='color: #999; text-align: center;'>Arama geçmişiniz temizlendi.</p>";
+                    document.getElementById("aramaGecmisiListesi").innerHTML = "<p style='color: #94a3b8; text-align: center;'>Arama geçmişiniz temizlendi.</p>";
                 }
             } catch (err) {
                 alert("Hata: " + err.message);
             }
         }
 
-        // Popüler Kelimeler
         async function populerKelimeleriGetir(gunSayisi = 30) {
             const liste = document.getElementById("populerKelimelerListesi");
-            liste.innerHTML = "<p style='color: #999; text-align: center;'>Yükleniyor...</p>";
+            liste.innerHTML = "<p style='color: #94a3b8; text-align: center;'>Yükleniyor...</p>";
 
             try {
                 const response = await fetch('/api/arama/populer?limit=15&gunSayisi=' + gunSayisi);
@@ -585,15 +1143,14 @@
                 liste.innerHTML = "";
 
                 if (populerler.length === 0) {
-                    liste.innerHTML = "<p style='color: #999; text-align: center;'>Henüz veri yok.</p>";
+                    liste.innerHTML = "<p style='color: #94a3b8; text-align: center;'>Henüz veri yok.</p>";
                     return;
                 }
 
                 populerler.forEach((item, index) => {
                     const div = document.createElement("div");
-                    div.style.cssText = "padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; transition: background 0.2s;";
+                    div.className = "list-item";
 
-                    // İlk 3'e medal emoji
                     let medal = "";
                     if (index === 0) medal = "🥇 ";
                     else if (index === 1) medal = "🥈 ";
@@ -601,34 +1158,24 @@
                     else medal = `${index + 1}. `;
 
                     div.innerHTML = `
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <span>
-                                    <strong style="color: #555;">${medal}${item.kelime}</strong>
-                                </span>
-                                <span style="font-size: 0.85em; color: #999;">
-                                    ${item.aramaSayisi} arama
-                                </span>
-                            </div>
+                            <strong>${medal}${item.kelime}</strong>
+                            <span class="meta">${item.aramaSayisi} arama</span>
                         `;
-
-                    div.onmouseover = () => div.style.backgroundColor = "#fff3cd";
-                    div.onmouseout = () => div.style.backgroundColor = "transparent";
                     div.onclick = () => {
                         kelimeKutusu.value = item.kelime;
                         aramaYap();
                     };
-
                     liste.appendChild(div);
                 });
 
             } catch (err) {
-                liste.innerHTML = "<p style='color: #e74c3c;'>Hata: " + err.message + "</p>";
+                liste.innerHTML = "<p style='color: #dc2626;'>Hata: " + err.message + "</p>";
             }
         }
 
         async function bugunPopulerler() {
             const liste = document.getElementById("populerKelimelerListesi");
-            liste.innerHTML = "<p style='color: #999; text-align: center;'>Yükleniyor...</p>";
+            liste.innerHTML = "<p style='color: #94a3b8; text-align: center;'>Yükleniyor...</p>";
 
             try {
                 const response = await fetch('/api/arama/populer/bugun?limit=15');
@@ -637,13 +1184,13 @@
                 liste.innerHTML = "";
 
                 if (populerler.length === 0) {
-                    liste.innerHTML = "<p style='color: #999; text-align: center;'>Bugün henüz arama yapılmamış.</p>";
+                    liste.innerHTML = "<p style='color: #94a3b8; text-align: center;'>Bugün henüz arama yapılmamış.</p>";
                     return;
                 }
 
                 populerler.forEach((item, index) => {
                     const div = document.createElement("div");
-                    div.style.cssText = "padding: 10px; border-bottom: 1px solid #eee; cursor: pointer; transition: background 0.2s;";
+                    div.className = "list-item";
 
                     let medal = "";
                     if (index === 0) medal = "🥇 ";
@@ -652,39 +1199,28 @@
                     else medal = `${index + 1}. `;
 
                     div.innerHTML = `
-                            <div style="display: flex; justify-content: space-between; align-items: center;">
-                                <span>
-                                    <strong style="color: #555;">${medal}${item.kelime}</strong>
-                                </span>
-                                <span style="font-size: 0.85em; color: #999;">
-                                    ${item.aramaSayisi} arama
-                                </span>
-                            </div>
+                            <strong>${medal}${item.kelime}</strong>
+                            <span class="meta">${item.aramaSayisi} arama</span>
                         `;
-
-                    div.onmouseover = () => div.style.backgroundColor = "#fff3cd";
-                    div.onmouseout = () => div.style.backgroundColor = "transparent";
                     div.onclick = () => {
                         kelimeKutusu.value = item.kelime;
                         aramaYap();
                     };
-
                     liste.appendChild(div);
                 });
 
             } catch (err) {
-                liste.innerHTML = "<p style='color: #e74c3c;'>Hata: " + err.message + "</p>";
+                liste.innerHTML = "<p style='color: #dc2626;'>Hata: " + err.message + "</p>";
             }
         }
 
-        // Sayfa yüklenince
+        // Page load
         gununKelimesiniGetir();
-        populerKelimeleriGetir(30); // Popüler kelimeleri otomatik yükle
+        populerKelimeleriGetir(30);
         if (kullaniciId) {
-            aramaGecmisiniGetir(); // Giriş yapmışsa geçmişi yükle
+            aramaGecmisiniGetir();
         }
 
-        // Örnek Cümleler
         async function ornekCumleleriGetir(kelime) {
             const alan = document.getElementById("ornekCumlelerAlani");
             const liste = document.getElementById("ornekCumlelerListesi");
@@ -704,7 +1240,7 @@
                         liste.appendChild(div);
                     });
                 } else {
-                    liste.innerHTML = "<p style='color:#999;'>Henüz örnek cümle eklenmemiş.</p>";
+                    liste.innerHTML = "<p style='color:#94a3b8;'>Henüz örnek cümle eklenmemiş.</p>";
                 }
 
                 alan.style.display = "block";
@@ -758,7 +1294,6 @@
             }
         }
 
-        // Günün Kelimesi
         async function gununKelimesiniGetir() {
             try {
                 const response = await fetch('/api/sozluk/gunun-kelimesi');
@@ -772,9 +1307,6 @@
                 console.log("Günün kelimesi yok.");
             }
         }
-
-        // Sayfa yüklenince günün kelimesini getir
-        gununKelimesiniGetir();
 
         btnFavori.addEventListener("click", async function () {
             if (!kullaniciId) return;
@@ -796,16 +1328,11 @@
         });
 
         async function favorileriGoster() {
-            const divAlani = document.getElementById("favoriListesiAlani");
-
-            if (divAlani.style.display === "block") {
-                divAlani.style.display = "none";
-                return;
-            }
-
+            const modal = document.getElementById("favoriModal");
             const gridContainer = document.getElementById("favoriGrid");
-            divAlani.style.display = "block";
-            gridContainer.innerHTML = "<p style='width:100%; text-align:center;'>Yükleniyor...</p>";
+
+            modal.style.display = "flex";
+            gridContainer.innerHTML = "<p style='width:100%; text-align:center; color: #94a3b8;'>Yükleniyor...</p>";
 
             try {
                 const response = await fetch('/api/favori/listele/' + kullaniciId);
@@ -820,7 +1347,7 @@
 
                 if (veriler.length === 0) {
                     gridContainer.innerHTML = `
-                            <div style="grid-column: 1 / -1; text-align: center; color: #777; padding: 20px;">
+                            <div style="grid-column: 1 / -1; text-align: center; color: #94a3b8; padding: 30px;">
                                 Henüz hiç favori kelimeniz yok. <br>
                                 <small>Beğendiğiniz kelimeleri aratıp "Favorilere Ekle" diyebilirsiniz.</small>
                             </div>`;
@@ -838,11 +1365,13 @@
                     gridContainer.appendChild(kart);
                 });
 
-                divAlani.scrollIntoView({ behavior: 'smooth' });
-
             } catch (err) {
                 gridContainer.innerHTML = "Bağlantı hatası: " + err;
             }
+        }
+
+        function favorileriKapat() {
+            document.getElementById("favoriModal").style.display = "none";
         }
 
         async function favoriSil(id) {
@@ -853,7 +1382,14 @@
         }
 
         async function hesapSil() {
-            if (!confirm("DİKKAT! Hesabınız ve tüm favorileriniz kalıcı olarak silinecek. Emin misiniz?")) return;
+            document.getElementById("hesapSilModal").style.display = "flex";
+        }
+
+        function hesapSilModalKapat() {
+            document.getElementById("hesapSilModal").style.display = "none";
+        }
+
+        async function hesapSilOnayla() {
             if (!kullaniciId) return;
 
             try {
@@ -877,25 +1413,23 @@
         }
 
         function formuGosterGizle() {
-            const form = document.getElementById("sifreDegistirmeFormu");
-            document.getElementById("oneriFormu").style.display = "none";
-            if (form.style.display === "none") {
-                form.style.display = "block";
-            } else {
-                form.style.display = "none";
-                document.getElementById("txtEskiSifre").value = "";
-                document.getElementById("txtYeniSifre").value = "";
-            }
+            document.getElementById("sifreModal").style.display = "flex";
+        }
+
+        function sifreModalKapat() {
+            document.getElementById("sifreModal").style.display = "none";
+            document.getElementById("txtEskiSifre").value = "";
+            document.getElementById("txtYeniSifre").value = "";
         }
 
         function oneriFormuGoster() {
-            const form = document.getElementById("oneriFormu");
-            document.getElementById("sifreDegistirmeFormu").style.display = "none";
-            if (form.style.display === "none") {
-                form.style.display = "block";
-            } else {
-                form.style.display = "none";
-            }
+            document.getElementById("oneriModal").style.display = "flex";
+        }
+
+        function oneriModalKapat() {
+            document.getElementById("oneriModal").style.display = "none";
+            document.getElementById("txtOneriKelime").value = "";
+            document.getElementById("txtOneriAnlam").value = "";
         }
 
         async function sifreGuncelle() {
@@ -917,7 +1451,7 @@
 
                 if (response.ok) {
                     alert("Şifreniz değiştirildi!");
-                    formuGosterGizle();
+                    sifreModalKapat();
                 } else {
                     alert("Hata: " + await response.text());
                 }
@@ -940,9 +1474,7 @@
 
                 if (response.ok) {
                     alert(await response.text());
-                    oneriFormuGoster();
-                    document.getElementById("txtOneriKelime").value = "";
-                    document.getElementById("txtOneriAnlam").value = "";
+                    oneriModalKapat();
                 } else {
                     alert("Hata: " + await response.text());
                 }
@@ -977,7 +1509,7 @@
                 listeAlani.innerHTML = "";
 
                 if (veri.length === 0) {
-                    listeAlani.innerHTML = "<p>Bu harfle başlayan kelime bulunamadı.</p>";
+                    listeAlani.innerHTML = "<p style='text-align: center; color: #94a3b8; padding: 30px;'>Bu harfle başlayan kelime bulunamadı.</p>";
                     return;
                 }
 
@@ -994,8 +1526,6 @@
                     listeAlani.appendChild(satir);
                 });
 
-                document.getElementById("harfAlani").scrollIntoView({ behavior: 'smooth' });
-
             } catch (err) {
                 listeAlani.innerHTML = "Hata oluştu: " + err;
             }
@@ -1005,4 +1535,5 @@
 
     </script>
 </body>
+
 </html>

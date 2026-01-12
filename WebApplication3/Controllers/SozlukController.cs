@@ -215,31 +215,6 @@ namespace WebApplication3.Controllers
             return Ok("Kelime anlamı başarıyla güncellendi.");
         }
 
-        [HttpGet("harf/{basHarf}")]
-        public IActionResult GetKelimelerByHarf(string basHarf)
-        {
-            var kelimeler = new List<string>();
-            string? baglantiDizesi = _configuration.GetConnectionString("SozlukBaglanti");
-
-            using (SqlConnection baglanti = new SqlConnection(baglantiDizesi))
-            {
-                baglanti.Open();
-                string sql = "SELECT Kelime FROM Kelimeler WHERE Kelime LIKE @harf + '%' ORDER BY Kelime";
-                using (SqlCommand komut = new SqlCommand(sql, baglanti))
-                {
-                    komut.Parameters.AddWithValue("@harf", basHarf);
-                    using (SqlDataReader okuyucu = komut.ExecuteReader())
-                    {
-                        while (okuyucu.Read())
-                        {
-                            kelimeler.Add(okuyucu.GetString(0));
-                        }
-                    }
-                }
-            }
-            return Ok(kelimeler);
-        }
-
         [HttpPost("oner")]
         public IActionResult KelimeOner([FromBody] OneriModel model)
         {

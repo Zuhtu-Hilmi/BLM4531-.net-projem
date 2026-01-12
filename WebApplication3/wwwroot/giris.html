@@ -1,53 +1,264 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Giriş Yap - En Sade Sözlük</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
         body {
-            font-family: sans-serif;
-            max-width: 400px;
-            margin: 50px auto;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            padding: 20px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 50px 40px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo {
             text-align: center;
+            margin-bottom: 35px;
         }
 
-        input {
-            width: 90%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+        .logo-icon {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            display: block;
         }
 
-        button {
-            width: 95%;
-            padding: 10px;
-            background: #007bff;
+        .logo h1 {
+            color: #fff;
+            font-size: 1.8em;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .logo p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.95em;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+            .input-group .icon {
+                position: absolute;
+                left: 18px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: rgba(255, 255, 255, 0.4);
+                font-size: 1.1em;
+            }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 18px 20px 18px 50px;
+            font-size: 1em;
+            font-family: inherit;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 14px;
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 18px;
+            font-size: 1.05em;
+            font-weight: 600;
+            font-family: inherit;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 14px;
             cursor: pointer;
-            margin-bottom: 10px;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .secondary {
-            background: #6c757d;
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 15px 30px -10px rgba(102, 126, 234, 0.5);
+            }
+
+            .btn-primary:active {
+                transform: translateY(0);
+            }
+
+        .btn-secondary {
+            width: 100%;
+            padding: 18px;
+            font-size: 1.05em;
+            font-weight: 600;
+            font-family: inherit;
+            background: rgba(255, 255, 255, 0.08);
+            color: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .btn-secondary:hover {
+                background: rgba(255, 255, 255, 0.15);
+                border-color: rgba(255, 255, 255, 0.25);
+            }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 25px 0;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.9em;
+        }
+
+            .divider::before,
+            .divider::after {
+                content: '';
+                flex: 1;
+                height: 1px;
+                background: rgba(255, 255, 255, 0.15);
+            }
+
+            .divider span {
+                padding: 0 15px;
+            }
+
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 30px;
+            color: rgba(255, 255, 255, 0.6);
+            text-decoration: none;
+            font-size: 0.95em;
+            transition: color 0.3s ease;
+        }
+
+            .back-link:hover {
+                color: #667eea;
+            }
+
+            .back-link span {
+                margin-right: 8px;
+            }
+
+        /* Decorative elements */
+        .decoration {
+            position: fixed;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            opacity: 0.1;
+            pointer-events: none;
+        }
+
+        .decoration-1 {
+            width: 400px;
+            height: 400px;
+            top: -100px;
+            right: -100px;
+        }
+
+        .decoration-2 {
+            width: 300px;
+            height: 300px;
+            bottom: -80px;
+            left: -80px;
+        }
+
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 40px 25px;
+            }
         }
     </style>
 </head>
 <body>
-    <h2>Kullanıcı Girişi</h2>
-    <input type="text" id="txtKadi" placeholder="Kullanıcı Adı" />
-    <input type="password" id="txtSifre" placeholder="Şifre" />
-    <button onclick="girisYap()">Giriş Yap</button>
-    <button onclick="kayitOl()" class="secondary">Kayıt Ol</button>
-    <p><a href="/">« Aramaya Dön</a></p>
+    <div class="decoration decoration-1"></div>
+    <div class="decoration decoration-2"></div>
+
+    <div class="login-container">
+        <div class="login-card">
+            <div class="logo">
+                <span class="logo-icon">📚</span>
+                <h1>En Sade Sözlük</h1>
+                <p>Hesabınıza giriş yapın</p>
+            </div>
+
+            <div class="input-group">
+                <span class="icon">👤</span>
+                <input type="text" id="txtKadi" placeholder="Kullanıcı Adı" />
+            </div>
+
+            <div class="input-group">
+                <span class="icon">🔒</span>
+                <input type="password" id="txtSifre" placeholder="Şifre" />
+            </div>
+
+            <button class="btn-primary" onclick="girisYap()">
+                Giriş Yap
+            </button>
+
+            <div class="divider"><span>veya</span></div>
+
+            <button class="btn-secondary" onclick="kayitOl()">
+                Yeni Hesap Oluştur
+            </button>
+
+            <a href="/" class="back-link">
+                <span>←</span> Ana Sayfaya Dön
+            </a>
+        </div>
+    </div>
 
     <script>
         async function girisYap() {
-            // DÜZELTME 1: Input ID'leri HTML ile eşleşmeli (txtKadi ve txtSifre)
             const kadi = document.getElementById("txtKadi").value;
             const sifre = document.getElementById("txtSifre").value;
+
+            if (!kadi || !sifre) {
+                alert("Lütfen kullanıcı adı ve şifre girin.");
+                return;
+            }
 
             const response = await fetch('/api/kullanici/giris', {
                 method: 'POST',
@@ -57,9 +268,6 @@
 
             if (response.ok) {
                 const data = await response.json();
-
-                // DÜZELTME 2: index.html 'sozluk_uid' kullanıyor, biz de onu kullanmalıyız.
-                // Ayrıca data objesinin tamamını değil, sadece ID'yi almalıyız (data.id).
                 localStorage.setItem('sozluk_uid', data.id);
                 localStorage.setItem('sozluk_kadi', kadi);
 
@@ -91,6 +299,14 @@
             });
             alert(await response.text());
         }
+
+        // Enter key support
+        document.getElementById("txtSifre").addEventListener("keypress", function (e) {
+            if (e.key === "Enter") girisYap();
+        });
+        document.getElementById("txtKadi").addEventListener("keypress", function (e) {
+            if (e.key === "Enter") document.getElementById("txtSifre").focus();
+        });
     </script>
 </body>
 </html>
